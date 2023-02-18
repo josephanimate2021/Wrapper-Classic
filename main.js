@@ -18,8 +18,6 @@ initialization
 if (!fs.existsSync(assets)) fs.mkdirSync(assets);
 if (!fs.existsSync(cache)) fs.mkdirSync(cache);
 if (!fs.existsSync(saved)) fs.mkdirSync(saved);
-// start discord rpc
-const discord = require("./utils/discord");
 // start the server
 const server = require("./wrapper/server");
 server();
@@ -34,8 +32,8 @@ app.commandLine.appendSwitch("ppapi-flash-version", "32.0.0.371");
 let mainWindow;
 const createWindow = () => {
 	mainWindow = new BrowserWindow({
-		width: 640,
-		height: 360,
+		width: 910,
+		height: 629,
 		title: "Wrapper: Offline",
 		icon: path.join(__dirname, "./server/favicon.ico"),
 		webPreferences: {
