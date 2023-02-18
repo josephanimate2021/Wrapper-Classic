@@ -18,13 +18,20 @@ group.route("POST", "/goapi/getThemeList/", async (req, res) => {
 	const zip = await fUtil.zippy(xmlPath, "themelist.xml");
 	res.setHeader("Content-Type", "application/zip");
 	res.end(zip);
-});
+})
 
 /*
 load
 */
-group.route("POST", "/goapi/getTheme/", async (req, res) => {
-	fs.createReadStream(`./server/static/store/${req.body.themeId || req.body.tray || "sf"}/${req.body.themeId || req.body.tray || "sf"}.zip`).pipe(res);
+.route("POST", "/goapi/getTheme/", async (req, res) => {
+	console.log(req.body);
+	const id = req.body.themeId || req.body.tray || "sf";
+	res.assert(id, 500, "Missing one or more fields.");
+
+	const xmlPath = path.join(folder, `${id}/theme.xml`);
+	const zip = await fUtil.zippy(xmlPath, "theme.xml");
+	res.setHeader("Content-Type", "application/zip");
+	res.end(zip);
 });
 
 module.exports = group;

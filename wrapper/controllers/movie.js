@@ -119,23 +119,10 @@ save
 */
 // movies
 group.route("POST", "/goapi/saveMovie/", (req, res) => {
-	res.assert(req.body.body_zip, 400, "1");
-	const trigAutosave = req.body.is_triggered_by_autosave;
-	res.assert(!(trigAutosave && !req.body.movieId), 200, "0");
+	const body = req.body.body;
+	const thumb = Buffer.from(req.body.thumbnail_large, "base64");
 
-	const isStarter = req.body.isStarter || false;
-	const body = Buffer.from(req.body.body_zip, "base64");
-	const thumb = trigAutosave ?
-		null : Buffer.from(req.body.thumbnail_large, "base64");
-
-	if (!body.slice(0, 4).equals(
-		Buffer.from([0x50, 0x4b, 0x03, 0x04])
-	)) {
-		res.statusCode = 400;
-		return res.end("1Movie is not a zip");
-	}
-
-	Movie.save(body, thumb, req.body.movieId, isStarter).then((id) => {
+	Movie.save(body, thumb, req.body.movieId).then((id) => {
 		res.end("0" + id);
 	}).catch((err) => {
 		res.statusCode = 500;

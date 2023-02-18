@@ -54,8 +54,8 @@ module.exports = {
 
 		// title
 		const title = buffer.subarray(
-			buffer.indexOf("<title>") + 16,
-			buffer.indexOf("]]></title>")
+			buffer.indexOf("<title>") + 7,
+			buffer.indexOf("</title>")
 		).toString().trim();
 
 		// get the duration string
@@ -93,47 +93,28 @@ module.exports = {
 	 * @param {boolean} starter is it a starter
 	 * @returns {Promise<string>}
 	 */
-	async save(body, thumb, id, starter) {
+	async save(body, thumb, id) {
 		return new Promise((resolve, reject) => {
 			id ||= fUtil.generateId();
 
 			// save the thumbnail on manual saves
-			if (thumb) {
-				fs.writeFileSync(path.join(folder, `${id}.png`), thumb);
-			}
-			// extract the movie xml and save it
-			const zip = nodezip.unzip(body);
-			const xmlStream = zip["movie.xml"].toReadStream();
+			if (thumb) fs.writeFileSync(path.join(folder, `${id}.png`), thumb);
 
-			let writeStream = fs.createWriteStream(path.join(folder, `${id}.xml`));
-			xmlStream.on("data", b => writeStream.write(b));
-			xmlStream.on("end", async () => {
-				writeStream.close((e) => {
-					if (e) throw e;
-
-					this.meta(id).then((meta) => {
-						let type;
-						const info = {
-							id,
-							duration: meta.durationString,
-							date: meta.date,
-							title: meta.title,
-							sceneCount: meta.sceneCount,
-						}
-						if (starter) {
-							info.type = "movie";
-							type = "assets";
-						} else {
-							type = "movies";
-						}
-
-						if (!DB.update(type, id, info)) {
-							console.log("This movie does not exist in the database. Inserting...", e);
-							DB.insert(type, info);
-						}
-						resolve(id);
-					});
-				});
+			fs.writeFileSync(path.join(folder, `${id}.xml`), body);
+			this.meta(id).then((meta) => {
+				let type = "movies";
+				const info = {
+					id,
+					duration: meta.durationString,
+					date: meta.date,
+					title: meta.title,
+					sceneCount: meta.sceneCount,
+				}
+				if (!DB.update(type, id, info)) {
+					console.log("This movie does not exist in the database. Inserting...");
+					DB.insert(type, info);
+				}
+				resolve(id);
 			});
 		});
 	},
