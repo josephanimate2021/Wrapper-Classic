@@ -27,29 +27,15 @@ server();
 /*
 load flash player
 */
-let pluginName;
-switch (process.platform) {
-	case "win32": {
-		pluginName = "./extensions/pepflashplayer.dll";
-		break;
-	} case "darwin": {
-		pluginName = "./extensions/PepperFlashPlayer.plugin";
-		break;
-	} case "linux": {
-		pluginName = "./extensions/libpepflashplayer.so";
-		// i don't know what this does but it makes flash work
-		app.commandLine.appendSwitch("no-sandbox");
-		break;
-	}
-}
+let pluginName = "./extensions/pepflashplayer.dll";
 app.commandLine.appendSwitch("ppapi-flash-path", path.join(__dirname, pluginName));
 app.commandLine.appendSwitch("ppapi-flash-version", "32.0.0.371");
 
 let mainWindow;
 const createWindow = () => {
 	mainWindow = new BrowserWindow({
-		width: 1200,
-		height: 700,
+		width: 640,
+		height: 360,
 		title: "Wrapper: Offline",
 		icon: path.join(__dirname, "./server/favicon.ico"),
 		webPreferences: {
