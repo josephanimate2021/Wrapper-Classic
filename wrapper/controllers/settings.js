@@ -42,42 +42,34 @@ group.route("GET", "/api/settings/get_updates", (req, res) => {
 		res.statusCode = 500;
 		res.end();
 	};
-	https.get(
-		{
-			host: "api.github.com",
-			path: "/repos/josephanimate2021/GoAnimate-2010-Offline-For-Windows/tags",
-			headers: {
-				"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0"
-			}
-		},
-		(res2) => {
-			let buffers = [];
-			res2.on("data", (c) => buffers.push(c));
-			res2.on("end", () => {
-				const buffer = Buffer.concat(buffers);
-				let json;
-				try {
-					json = JSON.parse(buffer.toString());
-				} catch (err) {
-					console.log("Error parsing JSON while checking for updates:", err);
-					console.log("Response:", buffer.toString());
-					res.statusCode = 400;
-					res.end();
-				}
-
-				const latest = json[0].name;
-				if (
-					+(latest.substring(1).replace(/\./, "")) >
-					+(process.env.WRAPPER_VER.replace(/\./, ""))
-				) {
-					res.json({ updates_available: true, tag_name: latest });
-				} else {
-					res.json({ updates_available: false });
-				}
-			});
-			res2.on("error", handleError);
+	https.get({
+		host: "api.github.com",
+		path: "/repos/josephanimate2021/GoAnimate-2010-Offline-For-Windows/tags",
+		headers: {
+			"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0"
 		}
-	).on("error", handleError);
+	}, (res2) => {
+		let buffers = [];
+		res2.on("data", (c) => buffers.push(c));
+		res2.on("end", () => {
+			const buffer = Buffer.concat(buffers);
+			let json;
+			try {
+				json = JSON.parse(buffer.toString());
+			} catch (err) {
+				console.log("Error parsing JSON while checking for updates:", err);
+				console.log("Response:", buffer.toString());
+				res.statusCode = 400;
+				res.end();
+			}
+
+			const latest = json[0].name;
+			if (+(latest.substring(1).replace(/\./, "")) > +(process.env.WRAPPER_VER.replace(/\./, ""))) {
+				res.json({ updates_available: true, tag_name: latest });
+			} else res.json({ updates_available: false });
+		});
+		res2.on("error", handleError);
+	}).on("error", handleError);
 });
 
 module.exports = group;
