@@ -9,12 +9,8 @@ const fs = require("fs");
 /*
 list
 */
-group.route("POST", "/goapi/getThemeList/", async (req, res) => {
-	const truncated = DB.select().TRUNCATED_THEMELIST;
-	const filepath = truncated ? 
-		"themelist.xml" : 
-		"themelist-allthemes.xml";
-	const xmlPath = path.join(folder, filepath);
+group.route("POST", "/goapi/getThemeList/", async (_req, res) => {
+	const xmlPath = path.join(folder, "themelist.xml");
 	const zip = await fUtil.zippy(xmlPath, "themelist.xml");
 	res.setHeader("Content-Type", "application/zip");
 	res.end(zip);
