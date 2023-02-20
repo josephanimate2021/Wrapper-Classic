@@ -3,19 +3,6 @@ const httpz = require("@octanuary/httpz");
 const Char = require("../models/char");
 const { exists } = require("../models/asset");
 const base = Buffer.alloc(1, "0");
-const defaultTypes = {
-	anime: "guy",
-	cctoonadventure: "default",
-	family: "adam",
-};
-const bfTypes = {
-	man: "default&ft=_sticky_filter_guy",
-	woman: "default&ft=_sticky_filter_girl",
-	boy: "kid&ft=_sticky_filter_littleboy",
-	girl: "kid&ft=_sticky_filter_littlegirl",
-	heavy_man: "heavy&ft=_sticky_filter_heavyguy",
-	heavy_woman: "heavy&ft=_sticky_filter_heavygirl"
-};
 const group = new httpz.Group();
 
 /*
@@ -40,24 +27,8 @@ group.route("POST", "/goapi/getCcCharCompositionXml/", (req, res) => {
 /*
 redirect
 */
-group.route("GET", /\/go\/character_creator\/(\w+)(\/\w+)?(\/.+)?$/, (req, res) => {
-	let [, theme, mode, id] = req.matches;
-		
-	let redirect;
-	switch (mode) {
-		case "/copy": {
-			redirect = `/cc?themeId=${theme}&original_asset_id=${id.substring(1)}`;
-			break;
-		} default: {
-			const type = theme == "business" ?
-				bfTypes[req.query.type || ""] || "":
-				req.query.type || defaultTypes[theme] || "";
-			redirect = `/cc?themeId=${theme}&bs=${type}`;
-			break;
-		}
-	}
-	
-	res.redirect(redirect);
+group.route("GET", "/go/character_creator", (req, res) => {	
+	res.redirect("/cc?older=1");
 });
 
 /*
@@ -67,17 +38,17 @@ save
 group.route("POST", "/goapi/saveCCCharacter/", (req, res) => {
 	res.assert(
 		req.body.body,
-		req.body.thumbdata,
+		req.body.imagedata,
 		req.body.themeId,
 		400, "Missing one or more fields."
 	);
-	const body = Buffer.from(req.body.body);
-	const thumb = Buffer.from(req.body.thumbdata, "base64");
+	const body = req.body.body;
+	const thumb = Buffer.from(req.body.imagedata, "base64");
 
 	const meta = {
 		type: "char",
 		subtype: 0,
-		title: "Untitled",
+		title: req.body.title,
 		themeId: req.body.themeId
 	};
 	const id = Char.save(body, meta);
@@ -100,7 +71,8 @@ group.route("POST", "/goapi/saveCCThumbs/", (req, res) => {
 	} else {
 		res.end("1");
 	}
-});
+})
+.route("GET", /\/go\/movie\/file\/([^/]+)$/)
 
 /*
 upload

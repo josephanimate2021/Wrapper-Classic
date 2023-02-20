@@ -30,16 +30,23 @@ group.route("GET", "/cc", async (req, res) => {
 	let flashvars = {
 		appCode: "go",
 		ctc: "go",
+		isEmbed: 1,
 		isLogin: "Y",
-		lid: 7,
-		nextUrl: "/",
+		userName:"Jerry",
+		userEmail:"jerryguy69420@gmail.com",
+		userId:  2292,
+		m_mode: "school",
+		page: "",
 		siteId: "go",
-		themeId: "sf",
 		tlang: "en_US",
-		userId: 4843,
+		ut: 40,
+		lid: 7,
+		// options
+		themeId: req.query.themeId || "family",
+		// paths
 		apiserver: "http://localhost:4343/",
-		storePath: STORE_URL + "/<store>",
-		clientThemePath: CLIENT_URL + "/<client_theme>",
+		storePath: "http://localhost:4343/static/store/<store>",
+		clientThemePath: "http://localhost:4343/static/<client_theme>"
 	};
 	Object.assign(flashvars, req.query);
 	res.render("app/char", {
@@ -71,7 +78,7 @@ group.route("GET", "/go_full", async (req, res) => {
 		lid: 7,
 		nextUrl: "/",
 		siteId: "go",
-		tray: "sf",
+		tray: "custom",
 		tlang: "en_US",
 		userId: 4843,
 		apiserver: "http://localhost:4343/",
@@ -112,7 +119,7 @@ group.route("GET", "/player", async (req, res) => {
 	Object.assign(flashvars, req.query);
 	res.render("app/player", {
 		attrs: {
-			data: SWF_URL + "/player.swf?v=458",
+			data: SWF_URL + `/${req.query.older ? "old_" : ""}player.swf?v=458`,
 			type: "application/x-shockwave-flash", width: "100%", height: "100%",
 		},
 		params: {

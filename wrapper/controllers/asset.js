@@ -28,36 +28,37 @@ function listAssets(filters) {
 /*
 delete
 */
-group.route("POST", "/api_v2/asset/delete/", (req, res) => {
-	const id = req.body.data.id || req.body.data.starter_id;
+group.route("POST", "/goapi/deleteAsset/", (req, res) => {
+	const id = req.body.assetId;
 	res.assert(id, 400, { status: "error" });
 
 	if (!DB.delete("assets", id)) {
-		res.json({ status: "ok" });
+		res.end('1');
 	} else {
 		res.statusCode = 404;
-		res.json({ status: "error" });
+		res.end("404 Not Found");
 	}
-});
+})
 
 /*
 list
 */
-group.route("GET", "/api/assets/list", (req, res) => {
+.route("GET", "/api/assets/list", (req, res) => {
 	res.json(DB.select("assets"));
-});
-group.route("POST", ["/goapi/getUserAssets/", "/goapi/getCommunityAssets/"], async (req, res) => {
+})
+.route("POST", ["/goapi/getUserAssets/", "/goapi/getCommunityAssets/", "/goapi/searchCommunityAssets/"], async (req, res) => {
+	console.log(listAssets(req.body));
 	const zip = nodezip.create();
 	fUtil.addToZip(zip, "desc.xml", Buffer.from(listAssets(req.body)));
 	res.setHeader("Content-Type", "application/zip");
 	res.write(base);
 	res.end(await zip.zip());
-});
+})
 
 /*
 load
 */
-group.route("*", /\/(assets|goapi\/getAsset)\/([\S]*)/, (req, res, next) => {
+.route("*", /\/(assets|goapi\/getAsset)\/([\S]*)/, (req, res, next) => {
 	let id;
 	switch (req.method) {
 		case "GET":
@@ -91,12 +92,12 @@ group.route("*", /\/(assets|goapi\/getAsset)\/([\S]*)/, (req, res, next) => {
 			res.end();
 		}
 	}
-});
+})
 
 /*
 thumb
 */
-group.route("GET", /\/stock_thumbs\/([\S]+)/, (req, res) => {
+.route("GET", /\/stock_thumbs\/([\S]+)/, (req, res) => {
 	const filepath = path.join(__dirname, "../../", thumbUrl, req.matches[1]);
 	if (fs.existsSync(filepath)) {
 		fs.createReadStream(filepath).pipe(res);
@@ -104,38 +105,20 @@ group.route("GET", /\/stock_thumbs\/([\S]+)/, (req, res) => {
 		res.status(404);
 		res.end();
 	}
-});
+})
 
 /*
-info
+studio redirect
 */
-// get
-group.route("POST", "/api_v2/asset/get", (req, res) => {
-	const id = req.body?.data.id || req.body?.data.starter_id;
-	res.assert(id, 400, { status: "error" });
-
-	const info = DB.get("assets", id)?.data;
-	if (info) {
-		// add stuff that will never be useful in an offline lvm clone
-		info.share = { type: "none" };
-		info.published = "";
-		res.json({
-			status: "ok",
-			data: info
-		});
-	} else {
-		res.statusCode = 404;
-		res.json({ status: "not_found" });
-	}
-});
-// update
-group.route("POST", "/api_v2/asset/update/", (req, res) => {
-	const id = req.body.data.id || req.body.data.starter_id;
-	const title = req.body.data.title;
-	const tags = req.body.data.tags;
+.route("GET", /\/go\/studio\/theme\/([\S]+)/, (req, res) => res.redirect(`/go_full?tray=${
+	req.matches[1]
+}&older=1`)).route("POST", "/goapi/updateAsset/", (req, res) => {
+	const id = req.body.assetId;
+	const title = req.body.title;
+	const tags = req.body.tag;
 	if (!id || !title || !tags) {
 		res.statusCode = 400;
-		res.json({ status: "malformed" });
+		res.end("malformed");
 	}
 
 	const update = {
@@ -143,17 +126,17 @@ group.route("POST", "/api_v2/asset/update/", (req, res) => {
 		title: title
 	}
 	if (DB.update("assets", id, update)) {
-		res.json({ status: "ok" });
+		res.end("1");
 	} else {
 		res.statusCode = 404;
-		res.json({ status: "not_found" });
+		res.json("404 Not Found");
 	}
-});
+})
 
 /*
 save
 */
-group.route("POST", "/api/asset/upload", async (req, res) => {
+.route("POST", "/api/asset/upload", async (req, res) => {
 	const file = req.files.import;
 	if (typeof file === "undefined" && !req.body.type && !req.body.subtype) {
 		res.statusCode = 400;
@@ -290,8 +273,7 @@ group.route("POST", "/api/asset/upload", async (req, res) => {
 		status: "ok", 
 		data: info
 	});
-})
-group.route("POST", "/goapi/saveSound/", async (req, res) => {
+}).route("POST", "/goapi/saveSound/", async (req, res) => {
 	isRecord = req.body.bytes ? true : false;
 
 	let filepath, ext, stream;

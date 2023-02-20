@@ -79,7 +79,7 @@
 						</td>
 						<td>
 							<a href="javascript:;" onclick="popup('${tbl.id}')" title="Play"></a>
-							<a href="/go_full?movieId=${tbl.id}${starters ? "&isStarter=1" : ""}" title="Edit"></a>
+							<a href="javascript:;" onclick="edit('${tbl.id}')" title="Edit"></a>
 							<a href="/file/movie/file/${tbl.id}" download="${tbl.title}.zip" title="Download files -- NOT AN EXPORTER"></a>
 							<a href="javascript:;" onclick="destructive('${tbl.id}', 'clone')" title="Clone" ${starters ? "style='display:none'" : ""}></a>
 							<a href="javascript:;" onclick="destructive('${tbl.id}', 'delete')" title="Delete"></a>
@@ -91,6 +91,10 @@
 		// i want more movies
 		loadMore[0].onclick = loadRows;
 
+            function edit(mId) {
+                  const older = confirm("Older or newer video maker?");
+                  location.href = `/go_full?movieId=${mId}${older ? "&older=1" : ""}`;
+            }
 		function switchFilter(shouldEqual) {
 			if (starters == shouldEqual) return;
 			$(".movie_filter").removeClass("selected");
@@ -121,7 +125,8 @@
 						if (data.status == "ok") {
 							switch (act) {
 								case "clone":
-									window.location = `/go_full?movieId=${data.mId}`;
+                                                      const older = confirm("Use the older or newer video maker?");
+									window.location = `/go_full?movieId=${data.mId}${older ? "&older=1" : ""}`;
 									break;
 								case "delete":
 									const $elem = $("#" + mId);
@@ -133,7 +138,8 @@
 		}
 
 		function popup(id) {
-			window.open('/player?movieId=' + id, 'MsgWindow', 'width=861,height=629');
+                  const older = confirm("Use the older or newer video player?");
+			window.open(`/player?movieId=${id}${older ? "&older=1" : ""}`, 'MsgWindow', 'width=861,height=629');
 		}
 
 	</script>

@@ -53,6 +53,12 @@
 					Star Trek Cuogs
 				</a>
 			</div>
+                  <div class="theme" data-has-cc>
+				<a href="#" onclick="redirect('custom')">
+					<img src="/pages/img/themes/custom.jpg" alt="Comedy World">
+					Comedy World
+				</a>
+			</div>
 			<div id="char-copy">
 				<h2>Copy a character</h2>
 				<p>Have a character ID? Use it here!</p>
@@ -65,8 +71,6 @@
 	</body>
 
 	<script>
-		const charId = $("input[name='char-id']");
-
 		// filter the list
 		const params = new URLSearchParams(window.location.search);
 		// default to all themes
@@ -80,7 +84,7 @@
 		function redirect(tId, ccId = false) {
 			if (filter == "cc") {
                         const older = confirm("Older Or Newer Char Creator?");
-				window.location.href = `./cc?themeId=${ccId}${older ? "&older=1" : ""}`;
+				window.location.href = `./cc${older ? "?older=1" : ""}`;
 				return;
 			}
                   const older = confirm("Older Or Newer Video Maker?");

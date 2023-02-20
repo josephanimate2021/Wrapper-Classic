@@ -71,7 +71,7 @@ module.exports = {
 		let xml;
 		switch (v.type) {
 			case "char": {
-				xml = `<char id="${v.id}" enc_asset_id="${v.id}" name="${v.title || "Untitled"}" cc_theme_id="${v.themeId}" thumbnail_url="/assets/${v.id}.png" copyable="Y"><tags>${v.tags || ""}</tags></char>`;
+				xml = `<char id="${v.id}" index="1" name="${v.title || "Untitled"}" cc_theme_id="${v.themeId}" thumbnail_url="/assets/${v.id}.png" isCC="Y"></char>`;
 				break;
 			} case "bg": {
 				xml = `<background subtype="0" id="${v.id}" enc_asset_id="${v.id}" name="${v.title}" enable="Y" asset_url="/assets/${v.id}"/>`

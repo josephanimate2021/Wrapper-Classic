@@ -21,9 +21,8 @@ load
 */
 .route("POST", "/goapi/getTheme/", async (req, res) => {
 	console.log(req.body);
-	const id = req.body.themeId || req.body.tray || "sf";
+	const id = req.body.themeId;
 	res.assert(id, 500, "Missing one or more fields.");
-
 	const xmlPath = path.join(folder, `${id}/theme.xml`);
 	const zip = await fUtil.zippy(xmlPath, "theme.xml");
 	res.setHeader("Content-Type", "application/zip");
