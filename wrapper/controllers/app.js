@@ -50,18 +50,18 @@ group.route("GET", "/cc", async (req, res) => {
 		userName:"Jerry",
 		userEmail:"jerryguy69420@gmail.com",
 		userId:  2292,
-		m_mode: "school",
+		m_mode: "normal",
 		page: "",
 		siteId: "go",
 		tlang: "en_US",
 		ut: 40,
 		lid: 7,
 		// options
-		themeId: req.query.themeId || "family",
+		themeId: "family",
 		// paths
 		apiserver: "http://localhost:4343/",
-		storePath: "http://localhost:4343/static/store/<store>",
-		clientThemePath: "http://localhost:4343/static/<client_theme>"
+		storePath: STORE_URL + "/<store>",
+		clientThemePath: CLIENT_URL + "/<client_theme>"
 	};
 	Object.assign(flashvars, req.query);
 	switchGroups("cc", req.query.older ? true : false);
@@ -89,17 +89,21 @@ group.route("GET", "/go_full", async (req, res) => {
 	let flashvars = {
 		appCode: "go",
 		ctc: "go",
+		isEmbed: 1,
 		isLogin: "Y",
-		isWide: IS_WIDE,
-		lid: 7,
-		nextUrl: "/",
-		siteId: "go",
+		userName:"Jerry",
+		userEmail:"jerryguy69420@gmail.com",
 		tray: "custom",
+		userId:  2292,
+		isWide: IS_WIDE,
+		page: "",
+		siteId: "go",
 		tlang: "en_US",
-		userId: 4843,
+		ut: 40,
+		lid: 7,
 		apiserver: "http://localhost:4343/",
 		storePath: STORE_URL + "/<store>",
-		clientThemePath: CLIENT_URL + "/<client_theme>",
+		clientThemePath: CLIENT_URL + "/<client_theme>"
 	};
 	Object.assign(flashvars, req.query);
 	switchGroups("go_full", req.query.older ? true : false);
@@ -121,17 +125,21 @@ group.route("GET", "/player", async (req, res) => {
 	let flashvars = {
 		appCode: "go",
 		ctc: "go",
+		isEmbed: 1,
 		isLogin: "Y",
+		userName:"Jerry",
+		userEmail:"jerryguy69420@gmail.com",
+		userId:  2292,
 		isWide: IS_WIDE,
 		autostart: 1,
-		nextUrl: "/",
-		siteId: "7",
-		tray: "sf",
+		page: "",
+		siteId: "go",
 		tlang: "en_US",
-		userId: 4843,
+		ut: 40,
+		lid: 7,
 		apiserver: "http://localhost:4343/",
 		storePath: STORE_URL + "/<store>",
-		clientThemePath: CLIENT_URL + "/<client_theme>",
+		clientThemePath: CLIENT_URL + "/<client_theme>"
 	};
 	Object.assign(flashvars, req.query);
 	switchGroups("player", req.query.older ? true : false);

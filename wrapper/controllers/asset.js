@@ -47,12 +47,14 @@ list
 	res.json(DB.select("assets"));
 })
 .route("POST", ["/goapi/getUserAssets/", "/goapi/getCommunityAssets/", "/goapi/searchCommunityAssets/"], async (req, res) => {
-	console.log(listAssets(req.body));
 	const zip = nodezip.create();
 	fUtil.addToZip(zip, "desc.xml", Buffer.from(listAssets(req.body)));
 	res.setHeader("Content-Type", "application/zip");
 	res.write(base);
 	res.end(await zip.zip());
+}).route("POST", "/goapi/getUserAssetsXml/", async (req, res) => {
+	res.setHeader("Content-Type", "application/xml");
+	res.end(listAssets(req.body));
 })
 
 /*
