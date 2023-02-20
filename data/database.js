@@ -12,7 +12,8 @@ module.exports = class GoDatabase {
 				TRUNCATED_THEMELIST: true, // Cuts down the amount of themes that clog up the themelist in the videomaker.
 				SHOW_WAVEFORMS: true, // Forces waveforms to be off in the videomaker.
 				DEFAULT_WATERMARK: "twoLines", // Default watermark (if the GA watermark is chosen).
-				IS_WIDE: "1" // Sets the video player to 16:9.
+				IS_WIDE: "1", // Sets the video player to 16:9.
+				animation: "857"
 			};
 		} else {
 			this.path = path.join(folder, "database.json");

@@ -42,8 +42,8 @@ group.route("*", "/settings", (req, res) => {
 // themelist page
 group.route("GET", "/create", (req, res) => {
 	discord("Choosing a Theme");
-	const { TRUNCATED_THEMELIST } = DB.select();
-	res.render("create", { truncatedThemelist: TRUNCATED_THEMELIST });
+	const { animation } = DB.select();
+	res.render("create", { aniVer: animation });
 });
 // flash pages
 group.route("GET", "/cc", async (req, res) => {
@@ -53,21 +53,22 @@ group.route("GET", "/cc", async (req, res) => {
 		ctc: "go",
 		isEmbed: 1,
 		isLogin: "Y",
-		userName:"Jerry",
-		userEmail:"jerryguy69420@gmail.com",
-		userId:  2292,
-		m_mode: "normal",
+        userName:"Jerry",
+        userEmail:"jerryguy69420@gmail.com",
+        userId:  2292,
+		m_mode: "school",
 		page: "",
 		siteId: "go",
 		tlang: "en_US",
 		ut: 40,
 		lid: 7,
 		// options
+		original_asset_id: req.query["id"] || "",
 		themeId: "family",
 		// paths
 		apiserver: "http://localhost:4343/",
-		storePath: STORE_URL + "/<store>",
-		clientThemePath: CLIENT_URL + "/<client_theme>"
+		storePath: "http://localhost:4343/static/store/<store>",
+		clientThemePath: "http://localhost:4343/static/<client_theme>"
 	};
 	Object.assign(flashvars, req.query);
 	switchGroups("cc", req.query.older ? true : false);

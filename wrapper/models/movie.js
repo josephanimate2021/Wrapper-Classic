@@ -95,16 +95,48 @@ module.exports = {
 	 * @param {boolean} starter is it a starter
 	 * @returns {Promise<string>}
 	 */
-	async save(body, thumb, id) {
+	async save(body, thumb, id, movieZip, starter) {
 		return new Promise((resolve, reject) => {
 			id ||= fUtil.generateId();
 
 			// save the thumbnail on manual saves
-			if (thumb) fs.writeFileSync(path.join(folder, `${id}.png`), thumb);
-
-			fs.writeFileSync(path.join(folder, `${id}.xml`), body);
+			if (thumb) fs.writeFileSync(folder + `/${id}.png`, thumb);
+			if (!body) {
+				const zip = nodezip.unzip(movieZip);
+				const xmlStream = zip["movie.xml"].toReadStream();
+	
+				let writeStream = fs.createWriteStream(folder + `/${id}.xml`);
+				xmlStream.on("data", b => writeStream.write(b));
+				xmlStream.on("end", async () => {
+					writeStream.close((e) => {
+						if (e) reject(e);
+	
+						this.meta(id).then((meta) => {
+							let type;
+							const info = {
+								id,
+								duration: meta.durationString,
+								date: meta.date,
+								title: meta.title,
+								sceneCount: meta.sceneCount,
+							}
+							if (starter) {
+								info.type = "movie";
+								type = "assets";
+							} else {
+								type = "movies";
+							}
+	
+							if (!DB.update(type, id, info)) {
+								console.log("This movie does not exist in the database. Inserting...", e);
+								DB.insert(type, info);
+							}
+							resolve(id);
+						});
+					});
+				});
+			} else fs.writeFileSync(folder + `/${id}.xml`, body);
 			this.meta(id).then((meta) => {
-				let type = "movies";
 				const info = {
 					id,
 					duration: meta.durationString,
@@ -112,9 +144,9 @@ module.exports = {
 					title: meta.title,
 					sceneCount: meta.sceneCount,
 				}
-				if (!DB.update(type, id, info)) {
+				if (!DB.update("movies", id, info)) {
 					console.log("This movie does not exist in the database. Inserting...");
-					DB.insert(type, info);
+					DB.insert("movies", info);
 				}
 				resolve(id);
 			});

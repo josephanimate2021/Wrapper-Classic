@@ -22,28 +22,30 @@ group.route("POST", "/goapi/getCcCharCompositionXml/", (req, res) => {
 		res.status(404);
 		res.end("1");
 	}
-});
+})
 
 /*
 redirect
 */
-group.route("GET", "/go/character_creator", (req, res) => {	
-	res.redirect("/cc?older=1");
-});
+.route("GET", /\/go\/character_creator\/(\w+)$/, (req, res) => {	
+	const themeId = req.matches[1];
+	res.redirect(`/cc?themeId=${themeId}`);
+}).route("GET", "/go/character_creator", (req, res) => res.redirect(`/cc?older=1`))
 
 /*
 save
 */
 // save character + thumbnail
-group.route("POST", "/goapi/saveCCCharacter/", (req, res) => {
+.route("POST", "/goapi/saveCCCharacter/", (req, res) => {
+	const thmb = req.body.thumbdata || req.body.imagedata;
 	res.assert(
 		req.body.body,
-		req.body.imagedata,
+		thmb,
 		req.body.themeId,
 		400, "Missing one or more fields."
 	);
 	const body = req.body.body;
-	const thumb = Buffer.from(req.body.imagedata, "base64");
+	const thumb = Buffer.from(thmb, "base64");
 
 	const meta = {
 		type: "char",
@@ -54,16 +56,17 @@ group.route("POST", "/goapi/saveCCCharacter/", (req, res) => {
 	const id = Char.save(body, meta);
 	Char.saveThumb(id, thumb);
 	res.end("0" + id);
-});
+})
 // save thumbnail only
-group.route("POST", "/goapi/saveCCThumbs/", (req, res) => {
+.route("POST", "/goapi/saveCCThumbs/", (req, res) => {
 	const id = req.body.assetId;
+	const thmb = req.body.thumbdata || req.body.imagedata;
 	res.assert(
-		req.body.thumbdata,
+		thmb,
 		id,
 		400, "Missing one or more fields."
 	);
-	const thumb = Buffer.from(req.body.thumbdata, "base64");
+	const thumb = Buffer.from(thmb, "base64");
 
 	if (exists(`${id}.xml`)) {
 		Char.saveThumb(id, thumb);
@@ -72,12 +75,11 @@ group.route("POST", "/goapi/saveCCThumbs/", (req, res) => {
 		res.end("1");
 	}
 })
-.route("GET", /\/go\/movie\/file\/([^/]+)$/)
 
 /*
 upload
 */
-group.route("*", "/api/char/upload", (req, res) => {
+.route("*", "/api/char/upload", (req, res) => {
 	const file = req.files.import;
 	if (!file) {
 		console.log("Error uploading character: No file.");

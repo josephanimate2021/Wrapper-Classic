@@ -119,10 +119,13 @@ save
 */
 // movies
 group.route("POST", "/goapi/saveMovie/", (req, res) => {
-	const body = req.body.body;
+	var body = req.body.body;
+	if (!body) body = false;
+	var zip = false;
+	if (req.body.body_zip) zip = Buffer.from(req.body.body_zip, "base64")
 	const thumb = Buffer.from(req.body.thumbnail_large, "base64");
 
-	Movie.save(body, thumb, req.body.movieId).then((id) => {
+	Movie.save(body, thumb, req.body.movieId, zip).then((id) => {
 		res.end("0" + id);
 	}).catch((err) => {
 		res.statusCode = 500;

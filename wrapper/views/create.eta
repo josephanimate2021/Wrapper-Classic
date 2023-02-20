@@ -82,7 +82,7 @@
 				return;
 			}
 			const older = confirm("Older Or Newer Video Maker?");
-			window.location.href = `${older ? `/go_full?tray=${tId}&older=1` : `https://josephanimate2021.github.io/lvm-static/2014?tray=${tId}&action=create`}`;
+			window.location.href = `${older ? `/go_full?tray=${tId}&older=1` : `https://josephanimate2021.github.io/lvm-static/retro?tray=${tId}&action=create&v=<%~ it.aniVer %>`}`;
 		}
 		function copyRedirect() {
 			const id = charId.val();
