@@ -6,6 +6,21 @@ const database = require("../../data/database"), DB = new database(true);
 const reqIsStudio = require("../middlewares/req.isStudio");
 const { SWF_URL, STORE_URL, CLIENT_URL } = process.env;
 const group = new httpz.Group();
+const fs = require("fs");
+function switchGroups(swftype, isOlder = false) {
+	var buffer, buff;
+	fs.unlinkSync(`./server/static/client_theme/go/en_US/${swftype}.swf`);
+	fs.unlinkSync(`./server/static/client_theme/go/lang_common/${swftype}.swf`);
+	if (isOlder) {
+		buffer = fs.readFileSync(`./server/client_theme/go/en_US/${swftype}.swf`);
+		buff = fs.readFileSync(`./server/client_theme/go/lang_common/${swftype}.swf`);
+	} else {
+		buffer = fs.readFileSync(`./server/477/client_theme/go/en_US/${swftype}.swf`);
+		buff = fs.readFileSync(`./server/477/client_theme/go/lang_common/${swftype}.swf`);
+	}
+	fs.writeFileSync(`./server/static/client_theme/go/en_US/${swftype}.swf`, buffer);
+	fs.writeFileSync(`./server/static/client_theme/go/lang_common/${swftype}.swf`, buff);
+}
 
 group.add(reqIsStudio);
 // video list
@@ -49,6 +64,7 @@ group.route("GET", "/cc", async (req, res) => {
 		clientThemePath: "http://localhost:4343/static/<client_theme>"
 	};
 	Object.assign(flashvars, req.query);
+	switchGroups("cc", req.query.older ? true : false);
 	res.render("app/char", {
 		title: "Character Creator",
 		attrs: {

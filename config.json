@@ -3,7 +3,7 @@
 
 	"SWF_URL": "/static/animation",
 	"STORE_URL": "/static/store",
-	"CLIENT_URL": "/static/477",
+	"CLIENT_URL": "/477",
 	"CHAR_BASE_URL": "./server/characters",
 	"THUMB_BASE_URL": "./server/thumbnails",
 

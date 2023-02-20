@@ -58,8 +58,7 @@ module.exports = {
 			buffer.indexOf("</title>")
 		).toString().trim();
 		var videoTitle;
-		if (buffer.includes("<title>")) videoTitle = title;
-		else videoTitle = "Untitled Video";
+		if (buffer.includes("<title/>")) videoTitle = "Untitled Video";
 
 		// get the duration string
 		const durBeg = buffer.indexOf('duration="') + 10;
@@ -81,7 +80,7 @@ module.exports = {
 		return {
 			id,
 			duration,
-			videoTitle,
+			title: videoTitle || title,
 			date: fs.statSync(filepath).mtime,
 			durationString: durationStr,
 			sceneCount: count,
