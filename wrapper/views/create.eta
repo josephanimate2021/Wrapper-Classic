@@ -36,12 +36,6 @@
 				</a>
 			</div>
 			<div class="theme">
-				<a href="#" onclick="redirect('underdog')">
-					<img src="/pages/img/themes/underdog.png" alt="Saturday Morning TV">
-					Saturday Morning TV
-				</a>
-			</div>
-			<div class="theme">
 				<a href="#" onclick="redirect('willie')">
 					<img src="/pages/img/themes/willie.jpg" alt="Willie Nelson">
 					Willie Nelson

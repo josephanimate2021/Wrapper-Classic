@@ -102,6 +102,7 @@ group.route("GET", "/go_full", async (req, res) => {
 		clientThemePath: CLIENT_URL + "/<client_theme>",
 	};
 	Object.assign(flashvars, req.query);
+	switchGroups("go_full", req.query.older ? true : false);
 	res.render("app/studio", {
 		attrs: {
 			data: SWF_URL + `/${req.query.older ? "old" : "go"}_full.swf?v=458`,
@@ -133,6 +134,7 @@ group.route("GET", "/player", async (req, res) => {
 		clientThemePath: CLIENT_URL + "/<client_theme>",
 	};
 	Object.assign(flashvars, req.query);
+	switchGroups("player", req.query.older ? true : false);
 	res.render("app/player", {
 		attrs: {
 			data: SWF_URL + `/${req.query.older ? "old_" : ""}player.swf?v=458`,
