@@ -20,6 +20,12 @@ function switchGroups(swftype, isOlder = false) {
 	}
 	fs.writeFileSync(`./server/static/client_theme/go/en_US/${swftype}.swf`, buffer);
 	fs.writeFileSync(`./server/static/client_theme/go/lang_common/${swftype}.swf`, buff);
+	if (swftype != "go_full") return;
+	fs.unlinkSync(`./server/static/client_theme/locale/go/en_US/go.mo`);
+	var b;
+	if (isOlder) b = fs.readFileSync(`./server/client_theme/locale/go/en_US/go.mo`);
+	else b = fs.readFileSync(`./server/477/client_theme/locale/go/en_US/go.mo`);
+	fs.writeFileSync(`./server/static/client_theme/locale/go/en_US/go.mo`, b);
 }
 
 group.add(reqIsStudio);
@@ -109,7 +115,7 @@ group.route("GET", "/go_full", async (req, res) => {
 	switchGroups("go_full", req.query.older ? true : false);
 	res.render("app/studio", {
 		attrs: {
-			data: SWF_URL + `/${req.query.older ? "old" : "go"}_full.swf?v=458`,
+			data: SWF_URL + `/${req.query.older ? "old_full.swf?v=458" : "go_full.swf"}`,
 			type: "application/x-shockwave-flash", width: "100%", height: "100%",
 		},
 		params: {

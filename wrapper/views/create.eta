@@ -81,8 +81,8 @@
 				window.location.href = `./cc${older ? "?older=1" : ""}`;
 				return;
 			}
-                  const older = confirm("Older Or Newer Video Maker?");
-			window.location.href = `./go_full?tray=${tId}${older ? "&older=1" : ""}`;
+			const older = confirm("Older Or Newer Video Maker?");
+			window.location.href = `${older ? `/go_full?tray=${tId}&older=1` : `https://josephanimate2021.github.io/lvm-static/2014?tray=${tId}&action=create`}`;
 		}
 		function copyRedirect() {
 			const id = charId.val();
