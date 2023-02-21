@@ -144,7 +144,22 @@ group.route("POST", "/goapi/saveMovie/", (req, res) => {
 	});
 });
 group.route("POST", "/goapi/saveRetroMovie/", (req, res) => {
-	console.log(req.body);
+	res.assert(req.body.body, 400, "1");
+	const trigAutosave = req.body.is_triggered_by_autosave;
+	res.assert(!(trigAutosave && !req.body.movieId), 200, "0");
+
+	const isStarter = req.body.isStarter || false;
+	const body = req.body.body;
+	const thumb = trigAutosave ?
+		null : Buffer.from(req.body.thumbnail_large, "base64");
+
+	Movie.saveRetro(body, thumb, req.body.movieId, isStarter).then((id) => {
+		res.end("0" + id);
+	}).catch((err) => {
+		res.statusCode = 500;
+		res.end("1" + err);
+		console.error("Error saving movie:", err);
+	});
 });
 // starter
 group.route("POST", "/goapi/saveTemplate/", (req, res) => {
