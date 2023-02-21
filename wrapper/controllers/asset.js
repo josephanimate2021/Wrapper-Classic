@@ -53,8 +53,27 @@ list
 	res.write(base);
 	res.end(await zip.zip());
 }).route("POST", "/goapi/getUserAssetsXml/", async (req, res) => {
+	let themeId;
+	switch (req.body.themeId) {
+		case "custom":
+			themeId = "family";
+			break;
+		case "action":
+		case "animal":
+		case "botdf":
+		case "space":
+			themeId = "cc2";
+			break;
+		default:
+			themeId = req.body.themeId;
+	}
+
+	const filters = {
+		themeId,
+		type: "char"
+	};
 	res.setHeader("Content-Type", "application/xml");
-	res.end(listAssets(req.body));
+	res.end(listAssets(filters));
 })
 
 /*

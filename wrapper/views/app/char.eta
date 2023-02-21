@@ -20,11 +20,13 @@
 
 	<body>
 		<%~ includeFile("../includes/header", { env: it.env }) %>
-
+		<% if (it.query.older) { %>
 		<main>
 			<%~ it.object(it.attrs, it.params) %>
 		</main>
-
+		<% } else { %>
+		<%~ it.frame(it.query.themeId, it.query.bs, it.query.v) %>
+		<% } %>
 		<%~ includeFile("../includes/footer", { env: it.env }) %>
 	</body>
 </html>

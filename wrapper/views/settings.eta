@@ -63,7 +63,7 @@
 						<option value="1">16:9</option>
 					</select>
 					<h3>Animation Version</h3>
-					<p>By default, the videomaker is using version 857.<br/>
+					<p>By default, the videomaker is using version 930.<br/>
 					However, you can toggle this setting to make it any version you like.<br/>
 					<select class="setting" id="animation"></select>
 				</nav>

@@ -93,7 +93,7 @@
 
             function edit(mId) {
                   const older = confirm("Older or newer video maker?");
-                  location.href = `/go_full?movieId=${mId}${older ? "&older=1" : ""}`;
+                  location.href = `${older ? `/go_full?movieId=${mId}&older=1` : `https://josephanimate2021.github.io/lvm-static/retro?movieId=${mId}&action=edit&v=<%~ it.aniVer %>`}`;
             }
 		function switchFilter(shouldEqual) {
 			if (starters == shouldEqual) return;
@@ -139,7 +139,7 @@
 
 		function popup(id) {
                   const older = confirm("Use the older or newer video player?");
-			window.open(`/player?movieId=${id}${older ? "&older=1" : ""}`, 'MsgWindow', 'width=861,height=629');
+			window.open(`${older ? `/player?movieId=${id}&older=1` : `https://josephanimate2021.github.io/lvm-static/movie?movieId=${id}&v=<%~ it.aniVer %>`}`, 'MsgWindow', 'width=861,height=629');
 		}
 
 	</script>

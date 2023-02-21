@@ -31,12 +31,13 @@ function switchGroups(swftype, isOlder = false) {
 group.add(reqIsStudio);
 // video list
 group.route("*", "/", (req, res) => {
-	discord("Video List");
-	res.render("list", {});
+	discord("Viewing My Videos");
+	const { animation } = DB.select();
+	res.render("list", { aniVer: animation });
 });
 // settings
 group.route("*", "/settings", (req, res) => {
-	discord("Settings");
+	discord("Changing My Settings");
 	res.render("settings", {});
 });
 // themelist page
@@ -53,8 +54,8 @@ group.route("GET", "/cc", async (req, res) => {
 		ctc: "go",
 		isEmbed: 1,
 		isLogin: "Y",
-        userName:"Jerry",
-        userEmail:"jerryguy69420@gmail.com",
+        username:"Jerry",
+        usemail:"jerryguy69420@gmail.com",
         userId:  2292,
 		m_mode: "school",
 		page: "",
@@ -87,7 +88,9 @@ group.route("GET", "/cc", async (req, res) => {
 			allowScriptAccess: "always",
 			movie: SWF_URL + "/cc.swf",
 		},
-		object: toObjectString
+		object: toObjectString,
+		query: req.query,
+		frame: createFrame
 	});
 });
 group.route("GET", "/go_full", async (req, res) => {
@@ -98,8 +101,9 @@ group.route("GET", "/go_full", async (req, res) => {
 		ctc: "go",
 		isEmbed: 1,
 		isLogin: "Y",
-		userName:"Jerry",
-		userEmail:"jerryguy69420@gmail.com",
+		nextUrl: "/",
+		username:"Jerry",
+		usemail:"jerryguy69420@gmail.com",
 		tray: "custom",
 		userId:  2292,
 		isWide: IS_WIDE,
@@ -134,8 +138,8 @@ group.route("GET", "/player", async (req, res) => {
 		ctc: "go",
 		isEmbed: 1,
 		isLogin: "Y",
-		userName:"Jerry",
-		userEmail:"jerryguy69420@gmail.com",
+		username:"Jerry",
+		usemail:"jerryguy69420@gmail.com",
 		userId:  2292,
 		isWide: IS_WIDE,
 		autostart: 1,
@@ -176,6 +180,11 @@ function toObjectString(attrs, params) {
 	return `<object id="obj" ${Object.keys(attrs).map(key =>
 		`${key}="${attrs[key].replace(/"/g, "\\\"")}"`
 	).join(" ")}>${toParamString(params)}</object>`;
+}
+function createFrame(themeId, bs, v) {
+	return `<center><embed width="960" height="600" src="https://josephanimate2021.github.io/lvm-static/char?themeId=${
+		themeId
+	}&bs=${bs}&v=${v}"></embed></center>`
 }
 
 module.exports = group;

@@ -48,7 +48,7 @@
 				</a>
 			</div>
                   <div class="theme" data-has-cc>
-				<a href="#" onclick="redirect('custom')">
+				<a href="#" onclick="redirect('custom', 'family')">
 					<img src="/pages/img/themes/custom.jpg" alt="Comedy World">
 					Comedy World
 				</a>
@@ -78,7 +78,7 @@
 		function redirect(tId, ccId = false) {
 			if (filter == "cc") {
                         const older = confirm("Older Or Newer Char Creator?");
-				window.location.href = `./cc${older ? "?older=1" : ""}`;
+				window.location.href = `./cc?v=<%~ it.aniVer %>&themeId=${ccId}&bs=adam${older ? "&older=1" : ""}`;
 				return;
 			}
 			const older = confirm("Older Or Newer Video Maker?");
@@ -86,7 +86,7 @@
 		}
 		function copyRedirect() {
 			const id = charId.val();
-			window.location.href = `./cc?original_asset_id=${id}`;
+			window.location.href = `./cc?v=<%~ it.aniVer %>&original_asset_id=${id}`;
 		}
 
 	</script>

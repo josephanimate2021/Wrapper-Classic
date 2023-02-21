@@ -13,7 +13,7 @@ module.exports = class GoDatabase {
 				SHOW_WAVEFORMS: true, // Forces waveforms to be off in the videomaker.
 				DEFAULT_WATERMARK: "twoLines", // Default watermark (if the GA watermark is chosen).
 				IS_WIDE: "1", // Sets the video player to 16:9.
-				animation: "857"
+				animation: "930"
 			};
 		} else {
 			this.path = path.join(folder, "database.json");

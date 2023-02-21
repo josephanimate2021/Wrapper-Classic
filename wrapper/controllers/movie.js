@@ -119,19 +119,32 @@ save
 */
 // movies
 group.route("POST", "/goapi/saveMovie/", (req, res) => {
-	var body = req.body.body;
-	if (!body) body = false;
-	var zip = false;
-	if (req.body.body_zip) zip = Buffer.from(req.body.body_zip, "base64")
-	const thumb = Buffer.from(req.body.thumbnail_large, "base64");
+	res.assert(req.body.body_zip, 400, "1");
+	const trigAutosave = req.body.is_triggered_by_autosave;
+	res.assert(!(trigAutosave && !req.body.movieId), 200, "0");
 
-	Movie.save(body, thumb, req.body.movieId, zip).then((id) => {
+	const isStarter = req.body.isStarter || false;
+	const body = Buffer.from(req.body.body_zip, "base64");
+	const thumb = trigAutosave ?
+		null : Buffer.from(req.body.thumbnail_large, "base64");
+
+	if (!body.slice(0, 4).equals(
+		Buffer.from([0x50, 0x4b, 0x03, 0x04])
+	)) {
+		res.statusCode = 400;
+		return res.end("1Movie is not a zip");
+	}
+
+	Movie.save(body, thumb, req.body.movieId, isStarter).then((id) => {
 		res.end("0" + id);
 	}).catch((err) => {
 		res.statusCode = 500;
 		res.end("1" + err);
 		console.error("Error saving movie:", err);
 	});
+});
+group.route("POST", "/goapi/saveRetroMovie/", (req, res) => {
+	console.log(req.body);
 });
 // starter
 group.route("POST", "/goapi/saveTemplate/", (req, res) => {
