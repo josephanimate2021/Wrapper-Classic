@@ -3,7 +3,7 @@
 		<a href="javascript:;" onclick="checkForUpdates()">v<%= it.env.WRAPPER_VER %></a>
 		<a href="/settings">Settings</a>
 		<a href="https://github.com/Wrapper-Offline/Wrapper-Offline/wiki" target="_blank">FAQ</a>
-		<a href="https://discord.gg/yhGAetN">Discord</a>
+		<a href="https://discord.gg/kgA3EsXYUB">Discord</a>
 		<a href="javascript:window.location.reload()">Reload Page</a>
 	</nav>
 
