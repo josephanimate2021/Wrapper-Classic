@@ -50,7 +50,7 @@ save
 	const meta = {
 		type: "char",
 		subtype: 0,
-		title: req.body.title,
+		title: req.body.title || "Untitled",
 		themeId: req.body.themeId
 	};
 	const id = Char.save(body, meta);
