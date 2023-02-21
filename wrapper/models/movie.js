@@ -48,7 +48,7 @@ module.exports = {
 	 * 	id: string
 	 * }} 
 	 */
-	async meta(id, containsZip = false;) {
+	async meta(id, containsZip = false) {
 		const filepath = path.join(folder, `${id}.xml`);
 		const buffer = fs.readFileSync(filepath);
 
