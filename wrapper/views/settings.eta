@@ -3,8 +3,8 @@
 	<head>
 		<meta charset="UTF-8"/>
 		<link rel="icon" href="/favicon.ico" type="image/png" />
-		<title>Settings - Wrapper: Offline</title>
-		<meta name="description" content="Wrapper: Offline's settings"/>
+		<title>Settings - Wrapper: Classic</title>
+		<meta name="description" content="Wrapper: Classic's settings"/>
 		<link rel="stylesheet" type="text/css" href="/pages/css/global.css"/>
 		<link rel="stylesheet" type="text/css" href="/pages/css/importer.css"/>
 		<script src="/pages/js/jquery.js"></script>
@@ -27,7 +27,7 @@
 					<h2>Features</h2>
 
 					<h3>Discord rich presence</h3>
-					<p>It's used to show when you're using Wrapper: Offline in your "Playing A Game" status on Discord,<br/>
+					<p>It's used to show when you're using Wrapper: Classic in your "Playing A Game" status on Discord,<br/>
 					much like how lots of modern computer games will show on your Discord status when you're playing<br/>
 					them. Turning this off will make Offline stop saying when you're using it on Discord.</p>
 					<input class="setting" type="checkbox" id="DISCORD_RPC"></input>

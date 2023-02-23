@@ -3,8 +3,8 @@
 	<head>
 		<meta charset="UTF-8"/>
 		<link rel="icon" href="/favicon.ico" type="image/png"/>
-		<title>Video List - Wrapper: Offline</title>
-		<meta name="description" content="Wrapper: Offline's Video List"/>
+		<title>Video List - Wrapper: Classic</title>
+		<meta name="description" content="Wrapper: Classic's Video List"/>
 		<link rel="stylesheet" type="text/css" href="/pages/css/global.css">
 		<link rel="stylesheet" type="text/css" href="/pages/css/list.css">
 		<script src="/pages/js/jquery.js"></script>

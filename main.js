@@ -34,7 +34,7 @@ const createWindow = () => {
 	mainWindow = new BrowserWindow({
 		width: 910,
 		height: 629,
-		title: "Wrapper: Offline",
+		title: "Wrapper: Classic",
 		icon: path.join(__dirname, "./server/favicon.ico"),
 		webPreferences: {
 			plugins: true,

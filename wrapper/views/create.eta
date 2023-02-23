@@ -3,8 +3,8 @@
 	<head>
 		<meta charset="UTF-8"/>
 		<link rel="icon" href="/favicon.ico" type="image/png"/>
-		<title>Create - Wrapper: Offline</title>
-		<meta name="description" content="Wrapper: Offline's create page"/>
+		<title>Create - Wrapper: Classic</title>
+		<meta name="description" content="Wrapper: Classic's create page"/>
 		<link rel="stylesheet" type="text/css" href="/pages/css/global.css">
 		<link rel="stylesheet" type="text/css" href="/pages/css/create.css">
 		<script src="/pages/js/jquery.js"></script>

@@ -2,6 +2,7 @@ const fs = require("fs");
 const httpz = require("@octanuary/httpz");
 const Char = require("../models/char");
 const { exists } = require("../models/asset");
+const database = require("../../data/database"), DB = new database(true);
 const base = Buffer.alloc(1, "0");
 const group = new httpz.Group();
 
@@ -27,9 +28,10 @@ group.route("POST", "/goapi/getCcCharCompositionXml/", (req, res) => {
 /*
 redirect
 */
-.route("GET", /\/go\/character_creator\/(\w+)$/, (req, res) => {	
+.route("GET", /\/go\/character_creator\/(\w+)$/, (req, res) => {
+	const { animation } = DB.select();	
 	const themeId = req.matches[1];
-	res.redirect(`/cc?themeId=${themeId}`);
+	res.redirect(`/cc?themeId=${themeId}&v=${animation}`);
 }).route("GET", "/go/character_creator", (req, res) => res.redirect(`/cc?older=1`))
 
 /*
