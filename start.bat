@@ -1,4 +1,4 @@
-:: Starts up GoAnimate 2010 Offline
+:: Starts up Wrapper Classic
 @echo off
 if exist node_modules ( 
     npm start 
