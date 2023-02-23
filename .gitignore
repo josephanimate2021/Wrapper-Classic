@@ -11,6 +11,7 @@ utilities/config.bat
 vfproxy/*
 bbbb/*
 node_modules
+package-lock.json
 # Logs
 logs
 *.log
