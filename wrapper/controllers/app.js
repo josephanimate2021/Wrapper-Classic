@@ -31,7 +31,6 @@ const group = new httpz.Group();
 group
 	.add(reqIsStudio)
 	// video list
-	// video list
 	.route("*", "/", (req, res) => {
 		discord("Video List");
 		res.render("list", {});
@@ -48,7 +47,6 @@ group
 	})
 	// flash pages
 	.route("GET", "/oldcc", async (req, res) => {
-		checkMe();
 		const { VERSION } = DB.select();
 		const { CLIENT_THEME } = DB.select();
 		discord("Character Creator");
@@ -89,7 +87,6 @@ group
 		});
 	})
 	.route("GET", "/cc", async (req, res) => {
-		checkMe();
 		discord("Character Creator");
 		const { IS_LOGGED_IN } = DB.select();
 		let flashvars = {
@@ -134,7 +131,6 @@ group
 		});
 	})
 	.route("GET", "/cc_browser", async (req, res) => {
-		checkMe();
 		discord("Character Browser");
 		const { IS_LOGGED_IN } = DB.select();
 		let flashvars = {
@@ -176,7 +172,6 @@ group
 	})
 	//Old go_full!
 	.route("GET", "/old_full", async (req, res) => {
-		checkMe();
 		const { IS_WIDE } = DB.select();
 		const { CLIENT_THEME } = DB.select();
 		const { IS_LOGGED_IN } = DB.select();
@@ -220,7 +215,6 @@ group
 		});
 	})
 	.route("GET", "/go_full", async (req, res) => {
-		checkMe();
 		discord("Video Maker");
 		const { IS_WIDE } = DB.select();
 		const { IS_LOGGED_IN } = DB.select();
@@ -261,7 +255,6 @@ group
 		});
 	})
 	.route("GET", "/player", async (req, res) => {
-		checkMe();
 		discord("Video Player");
 		const { IS_WIDE } = DB.select();
 		const { IS_LOGGED_IN } = DB.select();
