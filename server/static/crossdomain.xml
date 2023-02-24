@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE cross-domain-policy SYSTEM "http://www.macromedia.com/xml/dtds/cross-domain-policy.dtd">
+<cross-domain-policy>
+   <allow-access-from domain="goanimate.com" secure="false" />
+   <allow-access-from domain="goanimate4schools.com" secure="false" />
+   <allow-access-from domain="*.goanimate.com" secure="false"/>
+   <allow-access-from domain="demo.cdn.goanimate.com" secure="false"/>
+   <allow-access-from domain="*.goanimate4schools.com" secure="false"/>
+   <allow-access-from domain="s3.amazonaws.com" secure="false" />
+   <allow-access-from domain="lightspeed.st.goanimate.com" secure="false"/>
+   <allow-access-from domain="demo.cdn.skoletube.goanimate.com" secure="false"/>
+   <allow-access-from domain="d3v4eglovri8yt.cloudfront.net" secure="false" />
+   <allow-access-from domain="d2qrjeyl4jwu9j.cloudfront.net" secure="false" />
+   <allow-access-from domain="d2la53d5hsg1yx.cloudfront.net" secure="false" />
+   <allow-access-from domain="d1t0wjmrwaukvj.cloudfront.net" secure="false" />
+   <allow-access-from domain="d3l3i46hwjinat.cloudfront.net" secure="false" />
+   <allow-access-from domain="dgny9w8h2biiq.cloudfront.net" secure="false" />
+
+   <allow-http-request-headers-from domain="demo.cdn.goanimate.com" headers="*" secure="false"/>
+   <allow-http-request-headers-from domain="dgny9w8h2biiq.cloudfront.net" headers="*" secure="false"/>
+   <allow-http-request-headers-from domain="lightspeed.goanimate.com" headers="*" secure="false"/>
+   <allow-http-request-headers-from domain="d3v4eglovri8yt.cloudfront.net" headers="*" secure="false"/>
+   <allow-http-request-headers-from domain="lightspeed.goanimate4schools.com" headers="*" secure="false"/>
+   <allow-http-request-headers-from domain="d2qrjeyl4jwu9j.cloudfront.net" headers="*" secure="false"/>
+   <allow-http-request-headers-from domain="lightspeed.edplatform.goanimate.com" headers="*" secure="false"/>
+   <allow-http-request-headers-from domain="d3l3i46hwjinat.cloudfront.net" headers="*" secure="false"/>
+
+   <allow-access-from domain="*.goanimate.org" secure="false" />
+   <allow-access-from domain="*.vyond.org" secure="false"/>
+   <allow-access-from domain="staging.goanimate.org:3000" secure="false" />
+   <allow-access-from domain="staging.goanimate.org:3030" secure="true" />
+   <allow-access-from domain="staging-cdn.org" secure="false" />
+   <allow-access-from domain="staging-school-cdn.org" secure="false" />
+   <allow-access-from domain="skoletube-cdn.org" secure="false" />
+   <allow-access-from domain="edplatform-cdn.org" secure="false" />
+
+   <allow-http-request-headers-from domain="staging-cdn.org" headers="*" secure="false"/>
+   <allow-http-request-headers-from domain="staging-school-cdn.org" headers="*" secure="false"/>
+   <allow-http-request-headers-from domain="wix-cdn.goanimate.org" headers="*" secure="false"/>
+   <allow-http-request-headers-from domain="wix.goanimate.org" headers="*" secure="false"/>
+
+   <allow-access-from domain="godevstorage.s3.amazonaws.com" secure="false" />
+   <allow-access-from domain="s3-ap-southeast-1.amazonaws.com" secure="false" />
+</cross-domain-policy>
