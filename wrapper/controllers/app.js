@@ -36,13 +36,6 @@ group
 		discord("Video List");
 		res.render("list", {});
 	})
-
-	.route("*", "/logOut", (req, res) => {
-		res.render("logOut", {});
-	})
-	.route("*", "/reflex", (req, res) => {
-		res.render("app/My testing is my japanese", {});
-	})
 	// settings
 	.route("*", "/settings", (req, res) => {
 		discord("Settings");
@@ -52,14 +45,6 @@ group
 	.route("GET", "/create", (req, res) => {
 		discord("Choosing a Theme");
 		res.render("create", {});
-	})
-	.route("GET", "/watch", (req, res) => {
-		discord("WATCHING A VIDEO ON WRAPPER JYVEE EDITION RETRO!!!");
-		res.render("watch", {});
-	})
-	.route("GET", "/logIn", (req, res) => {
-		discord("Video List");
-		res.render("logIn", {});
 	})
 	// flash pages
 	.route("GET", "/oldcc", async (req, res) => {
@@ -79,7 +64,7 @@ group
 			trial: 1,
 			ut: 10,
 			tlang: "en_US",
-			userId: usrid,
+			userId: '28989',
 			apiserver: "http://localhost:4343/",
 			storePath: "http://localhost:4343/static/store/<store>",
 			clientThemePath: "http://localhost:4343/static/tommy/<client_theme>"
@@ -112,9 +97,9 @@ group
 			ctc: "go",
 			isEmbed: 1,
 			isLogin: "Y",
-            		userName:"Jerry",
-            		userEmail:"jerryguy69420@gmail.com",
-            		userId: usrid,
+            		username:"Jerry",
+            		usemail:"jerryguy69420@gmail.com",
+            		userId: '28989',
 			m_mode: "school",
 			page: "",
 			siteId: "go",
@@ -159,6 +144,7 @@ group
 			isLogin: "Y",
 			m_mode: "school",
 			page: "",
+			userId: '28989',
 			siteId: "go",
 			tlang: "en_US",
 			ut: IS_LOGGED_IN,
@@ -208,7 +194,7 @@ group
 			siteId: "go",
 			tray: "sf",
 			tlang: "en_US",
-			userId: usrid,
+			userId: '28989',
 			isWide: IS_WIDE,
 			nextUrl: "http://localhost:4343/",
 			gocoins: 100,
@@ -240,9 +226,9 @@ group
 		const { IS_LOGGED_IN } = DB.select();
 		let flashvars = {
             		tts_enabled: true,
-            		userName:"Jerry",
-            		userEmail:"jerryguy69420@gmail.com",
-					userId: usrid,
+            		username:"Jerry",
+            		usemail:"jerryguy69420@gmail.com",
+			userId: '28989',
 			appCode: "go",
 			collab: 1,
 			ctc: "go",
@@ -280,9 +266,9 @@ group
 		const { IS_WIDE } = DB.select();
 		const { IS_LOGGED_IN } = DB.select();
 		let flashvars = {
-            		userName:"Jerry",
-            		userEmail:"jerryguy69420@gmail.com",
-            		userId: "guythis",
+            		username:"Jerry",
+            		usemail:"jerryguy69",
+			userId: '28989',
 			autostart: 1,
 			isWide: IS_WIDE,
 			ut: IS_LOGGED_IN,
@@ -304,16 +290,3 @@ group
 		});
 	});
 module.exports = group;
-
-function checkMe()
-{
-const {IS_LOGGED_IN} = DB.select();
-if (IS_LOGGED_IN == 60)
-{
-usrid = "e9Vusx9Gv8";
-}
-else
-{
-usrid="";
-}
-}
