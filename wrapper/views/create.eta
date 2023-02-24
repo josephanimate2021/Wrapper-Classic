@@ -132,12 +132,6 @@
 				</a>
 			</div>
 			<div class="theme" data-isold>
-				<a href="#" onclick="redirect('jyvuniver')">
-					<img src="/pages/img/themes/politic.jpg" alt="JYVEE UNIVERSE">
-					<div>Jyvee Universe</div>
-				</a>
-			</div>
-			<div class="theme" data-isold>
 				<a href="#" onclick="redirect('akon')">
 					<img src="/pages/img/themes/akon.jpg" alt="AKON&#8482;">
 					AKON&#8482;
