@@ -3,6 +3,7 @@ _ASSETS/*
 _CACHÉ/*
 _SAVED/*
 _SAVED/database.json
+package-lock.json
 !_*/_NO_REMÖVE
 utilities/backups/*
 utilities/config.bat
