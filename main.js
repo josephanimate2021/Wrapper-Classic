@@ -34,9 +34,6 @@ switch (process.platform) {
 	case "win32": {
 		pluginName = "./extensions/pepflashplayer.dll";
 		break;
-	} case "darwin": {
-		pluginName = "./extensions/PepperFlashPlayer.plugin";
-		break;
 	} case "linux": {
 		pluginName = "./extensions/libpepflashplayer.so";
 		// i don't know what this does but it makes flash work
