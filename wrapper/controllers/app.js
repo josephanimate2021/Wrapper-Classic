@@ -205,7 +205,7 @@ group
 				flashvars,
 				allowScriptAccess: "always",
 			},
-			frame: `<embed height="100%" width="100%" src="https://josephanimate2021.github.io/lvm-static/retro.html?v=${VERSION}&tray=${flashvars.tray}&type=old&staticVer=static"></embed>`
+			frame: `<embed height="100%" width="100%" src="https://josephanimate2021.github.io/lvm-static/retro.html?v=${VERSION}&tray=${flashvars.tray}&type=old&staticVer=static/tommy"></embed>`
 		});
 	})
 	.route("GET", "/go_full", async (req, res) => {

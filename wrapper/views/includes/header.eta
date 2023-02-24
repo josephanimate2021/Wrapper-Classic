@@ -11,6 +11,9 @@
 			<a href="/create?filter=old">Old LVM</a>
 		</li>
 		<li class="top_nav_item help">
+			<a href="javascript:window.location.reload()">Reload Page</a>
+		</li>
+		<li class="top_nav_item help">
 			<a href="/create?filter=cc">Make A Character</a>
 		</li>
 		<li class="top_nav_item plus">

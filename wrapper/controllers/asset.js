@@ -15,6 +15,9 @@ const tempfile = require("tempfile");
 const fileTypes = require("../data/fileTypes.json");
 const header = process.env.XML_HEADER;
 const thumbUrl = process.env.THUMB_BASE_URL;
+const nodezip = require("node-zip");
+const fUtil = require("../../utils/fileUtil")
+const base = Buffer.alloc(1, 0);
 // stuff
 const Asset = require("../models/asset");
 const database = require("../../data/database"), DB = new database();
@@ -46,14 +49,6 @@ group
 	})
 	// list
 	.route("POST", "/goapi/getUserAssetsXml/", (req, res) => {
-		res.assert(
-			req.body.type,
-			req.body.type == "char",
-			req.body.themeId,
-			400,
-			"1Missing one or more fields."
-		);
-
 		let themeId;
 		switch (req.body.themeId) {
 			case "custom":
@@ -66,12 +61,20 @@ group
 			default: themeId = req.body.themeId;
 		}
 
-		const filters = {
+		var filters = {
 			themeId,
 			type: "char"
 		};
+		if (req.body.type != "char") filters = req.body;
 		res.setHeader("Content-Type", "application/xml");
 		res.end(listAssets(filters));
+	})
+	.route("POST", ["/goapi/getUserAssets/", "/goapi/getCommunityAssets/", "/goapi/searchCommunityAssets/"], async (req, res) => {
+		const zip = nodezip.create();
+		fUtil.addToZip(zip, "desc.xml", Buffer.from(listAssets(req.body)));
+		res.setHeader("Content-Type", "application/zip");
+		res.write(base);
+		res.end(await zip.zip());
 	})
 	.route("POST", "/api_v2/assets/imported", (req, res) => {
 		res.assert(req.body.data.type, 400, { status: "error" });
