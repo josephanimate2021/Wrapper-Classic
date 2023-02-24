@@ -47,8 +47,7 @@ group
 	})
 	// flash pages
 	.route("GET", "/oldcc", async (req, res) => {
-		const { VERSION } = DB.select();
-		const { CLIENT_THEME } = DB.select();
+		const { VERSION, CLIENT_THEME } = DB.select();
 		discord("Character Creator");
 		let flashvars = {
 			appCode: "go",
@@ -60,7 +59,7 @@ group
 			siteId: "go",
 			themeId: "family",
 			trial: 1,
-			ut: 10,
+			ut: 40,
 			tlang: "en_US",
 			userId: '28989',
 			apiserver: "http://localhost:4343/",
@@ -88,7 +87,6 @@ group
 	})
 	.route("GET", "/cc", async (req, res) => {
 		discord("Character Creator");
-		const { IS_LOGGED_IN } = DB.select();
 		let flashvars = {
 			appCode: "go",
 			ctc: "go",
@@ -101,7 +99,7 @@ group
 			page: "",
 			siteId: "go",
 			tlang: "en_US",
-			ut: IS_LOGGED_IN,
+			ut: 40,
 			// options
 			bs: "adam",
 			original_asset_id: req.query["id"] || "",
@@ -132,7 +130,6 @@ group
 	})
 	.route("GET", "/cc_browser", async (req, res) => {
 		discord("Character Browser");
-		const { IS_LOGGED_IN } = DB.select();
 		let flashvars = {
 			appCode: "go",
 			ctc: "go",
@@ -143,7 +140,7 @@ group
 			userId: '28989',
 			siteId: "go",
 			tlang: "en_US",
-			ut: IS_LOGGED_IN,
+			ut: 40,
 			// options
 			themeId: "family",
 			// paths
@@ -172,10 +169,7 @@ group
 	})
 	//Old go_full!
 	.route("GET", "/old_full", async (req, res) => {
-		const { IS_WIDE } = DB.select();
-		const { CLIENT_THEME } = DB.select();
-		const { IS_LOGGED_IN } = DB.select();
-		const { VERSION } = DB.select();
+		const { IS_WIDE, CLIENT_THEME, VERSION } = DB.select();
 		discord( VERSION + " Video Maker");
 		let flashvars = {
             		tts_enabled: 1,
@@ -194,7 +188,7 @@ group
 			nextUrl: "http://localhost:4343/",
 			gocoins: 100,
 			lid: 7,
-			ut: IS_LOGGED_IN,
+			ut: 40,
 			s3URL: "http://localhost:4343/",
 			apiserver: "http://localhost:4343/",
 			server: "http://localhost:4343/",
@@ -211,13 +205,12 @@ group
 				flashvars,
 				allowScriptAccess: "always",
 			},
-			object: toObjectString
+			frame: `<embed height="100%" width="100%" src="https://josephanimate2021.github.io/lvm-static/retro.html?v=${VERSION}&tray=${flashvars.tray}"></embed>`
 		});
 	})
 	.route("GET", "/go_full", async (req, res) => {
 		discord("Video Maker");
 		const { IS_WIDE } = DB.select();
-		const { IS_LOGGED_IN } = DB.select();
 		let flashvars = {
             		tts_enabled: true,
             		username:"Jerry",
@@ -236,7 +229,7 @@ group
 			siteId: "go",
 			tray: "custom",
 			tlang: "en_US",
-			ut: IS_LOGGED_IN,
+			ut: 60,
 			apiserver: "http://localhost:4343/",
 			storePath: "http://localhost:4343/static/store/<store>",
 			clientThemePath: CLIENT_URL + "/<client_theme>"
@@ -257,14 +250,13 @@ group
 	.route("GET", "/player", async (req, res) => {
 		discord("Video Player");
 		const { IS_WIDE } = DB.select();
-		const { IS_LOGGED_IN } = DB.select();
 		let flashvars = {
             		username:"Jerry",
             		usemail:"jerryguy69",
 			userId: '28989',
 			autostart: 1,
 			isWide: IS_WIDE,
-			ut: IS_LOGGED_IN,
+			ut: 40,
 			apiserver: "http://localhost:4343/",
 			storePath: "http://localhost:4343/static/store/<store>",
 			clientThemePath: CLIENT_URL + "/<client_theme>"
