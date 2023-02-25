@@ -1,1 +1,0 @@
-$.fn.modal.defaults.keyboard=false;$.fn.modal.defaults.backdrop="static";$.fn.modal.defaults.attentionAnimation="";$.fn.tooltip.defaults.container="body";$.flash.expressInstall="/static/libs/expressInstall.swf";
