@@ -1,26 +1,4 @@
-/*
-Wrapper: Offline
-License: MIT
-*/
-// assign config and env.json stuff to process.env
-const env = Object.assign(process.env, require("./env"), require("./config"));
 const { app, BrowserWindow, Menu, globalShortcut } = require("electron");
-const fs = require("fs");
-const path = require("path");
-const assets = path.join(__dirname, env.ASSET_FOLDER);
-const cache = path.join(__dirname, env.CACHÉ_FOLDER);
-const saved = path.join(__dirname, env.SAVED_FOLDER);
-
-/*
-initialization
-*/
-// create directories if they're missing
-if (!fs.existsSync(assets)) fs.mkdirSync(assets);
-if (!fs.existsSync(cache)) fs.mkdirSync(cache);
-if (!fs.existsSync(saved)) fs.mkdirSync(saved);
-// start the server
-const server = require("./wrapper/server");
-server();
 
 /*
 load flash player
@@ -34,21 +12,17 @@ const createWindow = () => {
 	mainWindow = new BrowserWindow({
 		width: 910,
 		height: 629,
-		title: "Wrapper: Classic",
-		icon: path.join(__dirname, "./server/favicon.ico"),
+		title: "GoWDPK",
+		icon: "https://gowdpk.ga/favicon.ico,
 		webPreferences: {
 			plugins: true,
 			contextIsolation: true
 		}
 	});
-	// use it in external scripts
 	process.env.MAIN_WINDOW_ID = mainWindow.id;
 
-	// initialize stuff
-	// clear the menu bar
 	Menu.setApplicationMenu(Menu.buildFromTemplate([]));
-	// load the video list
-	mainWindow.loadURL("http://localhost:" + env.SERVER_PORT);
+	mainWindow.loadURL("https://gowdpk.ga/");
 	mainWindow.on("closed", () => mainWindow = null);
 
 	// debug stuff
