@@ -13,7 +13,7 @@ const createWindow = () => {
 		width: 910,
 		height: 629,
 		title: "GoWDPK",
-		icon: "https://gowdpk.ga/favicon.ico,
+		icon: "https://gowdpk.ga/favicon.ico",
 		webPreferences: {
 			plugins: true,
 			contextIsolation: true
