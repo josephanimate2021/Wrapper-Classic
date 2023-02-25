@@ -10,6 +10,7 @@ const fs = require("fs");
 const httpz = require("@octanuary/httpz")
 const mime = require("mime-types");
 const path = require("path");
+const folder = path.join(__dirname, "../../", process.env.ASSET_FOLDER);
 const tempfile = require("tempfile");
 // vars
 const fileTypes = require("../data/fileTypes.json");
@@ -20,6 +21,7 @@ const fUtil = require("../../utils/fileUtil")
 const base = Buffer.alloc(1, 0);
 // stuff
 const Asset = require("../models/asset");
+const Character = require("../models/char");
 const database = require("../../data/database"), DB = new database();
 const rFileUtil = require("../../utils/realFileUtil");
 
@@ -72,6 +74,21 @@ group
 	.route("POST", ["/goapi/getUserAssets/", "/goapi/getCommunityAssets/", "/goapi/searchCommunityAssets/"], async (req, res) => {
 		const zip = nodezip.create();
 		fUtil.addToZip(zip, "desc.xml", Buffer.from(listAssets(req.body)));
+		const files = DB.select("assets", req.body);
+		for (const file of files) {
+			switch (file.type) {
+				case "char": {
+					const buffer = fs.readFileSync(path.join(folder, `${file.id}.png`));
+					const thumbBuffer = fs.readFileSync(path.join(folder, `${file.id}.png`));
+					fUtil.addToZip(zip, `${file.type}/${file.id}.xml`, buffer);
+					fUtil.addToZip(zip, `${file.type}/${file.id}.jpg`, thumbBuffer);
+					break;
+				} default: {
+					const buffer = Asset.load(file.id);
+					fUtil.addToZip(zip, `${file.type}/${file.id}`, buffer);
+				}
+			}
+		}
 		res.setHeader("Content-Type", "application/zip");
 		res.write(base);
 		res.end(await zip.zip());
