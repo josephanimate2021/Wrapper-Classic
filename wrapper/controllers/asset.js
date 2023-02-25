@@ -84,7 +84,7 @@ group
 					fUtil.addToZip(zip, `${file.type}/${file.id}.jpg`, thumbBuffer);
 					break;
 				} default: {
-					const buffer = Asset.load(file.id);
+					const buffer = Asset.load(file.id, true);
 					fUtil.addToZip(zip, `${file.type}/${file.id}`, buffer);
 				}
 			}
