@@ -60,9 +60,7 @@ module.exports = {
 	 * @returns {boolean}
 	 */
 	exists(id) {
-		const filepath = path.join(folder, id);
-		const exists = fs.existsSync(filepath);
-		return exists;
+		return fs.existsSync(path.join(folder, id));
 	},
 
 	/**
