@@ -1,4 +1,5 @@
 const { app, BrowserWindow, Menu, globalShortcut } = require("electron");
+const path = require("path");
 
 /*
 load flash player
@@ -24,11 +25,6 @@ const createWindow = () => {
 	Menu.setApplicationMenu(Menu.buildFromTemplate([]));
 	mainWindow.loadURL("https://gowdpk.ga/");
 	mainWindow.on("closed", () => mainWindow = null);
-
-	// debug stuff
-	if (env.NODE_ENV == "development") {
-		mainWindow.webContents.openDevTools();
-	}
 };
 
 app.whenReady().then(() => {
