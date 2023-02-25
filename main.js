@@ -14,7 +14,6 @@ const createWindow = () => {
 		width: 910,
 		height: 629,
 		title: "GoWDPK",
-		icon: "https://gowdpk.ga/favicon.ico",
 		webPreferences: {
 			plugins: true,
 			contextIsolation: true
@@ -23,7 +22,7 @@ const createWindow = () => {
 	process.env.MAIN_WINDOW_ID = mainWindow.id;
 
 	Menu.setApplicationMenu(Menu.buildFromTemplate([]));
-	mainWindow.loadURL("https://gowdpk.ga/");
+	mainWindow.loadURL("https://gowdpk.3hj.repl.co/");
 	mainWindow.on("closed", () => mainWindow = null);
 };
 
