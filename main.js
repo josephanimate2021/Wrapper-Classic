@@ -13,7 +13,7 @@ const createWindow = () => {
 	mainWindow = new BrowserWindow({
 		width: 910,
 		height: 629,
-		title: "GoWDPK",
+		title: "Domo Animate",
 		webPreferences: {
 			plugins: true,
 			contextIsolation: true
@@ -22,7 +22,7 @@ const createWindow = () => {
 	process.env.MAIN_WINDOW_ID = mainWindow.id;
 
 	Menu.setApplicationMenu(Menu.buildFromTemplate([]));
-	mainWindow.loadURL("https://gowdpk.3hj.repl.co/");
+	mainWindow.loadURL("https://gowdpk.3hj.repl.co/static/domo/list.html");
 	mainWindow.on("closed", () => mainWindow = null);
 };
 
