@@ -98,23 +98,22 @@ group.route("GET", "/go_full", async (req, res) => {
 	const { IS_WIDE } = DB.select();
 	let flashvars = {
 		appCode: "go",
+		collab: 0,
 		ctc: "go",
-		isEmbed: 1,
+		goteam_draft_only: 1,
 		isLogin: "Y",
-		nextUrl: "/",
-		username:"Jerry",
-		usemail:"jerryguy69420@gmail.com",
-		tray: "custom",
-		userId:  2292,
 		isWide: IS_WIDE,
+		lid: 0,
+		nextUrl: "/",
 		page: "",
+		retut: 1,
 		siteId: "go",
+		tray: "custom",
 		tlang: "en_US",
-		ut: 40,
-		lid: 7,
+		ut: 60,
 		apiserver: "http://localhost:4343/",
 		storePath: STORE_URL + "/<store>",
-		clientThemePath: CLIENT_URL + "/<client_theme>"
+		clientThemePath: CLIENT_URL + "/<client_theme>",
 	};
 	Object.assign(flashvars, req.query);
 	switchGroups("go_full", req.query.older ? true : false);

@@ -1,7 +1,6 @@
 const ffmpeg = require("fluent-ffmpeg");
 ffmpeg.setFfmpegPath(require("@ffmpeg-installer/ffmpeg").path);
 const mp3Duration = require("mp3-duration");
-const sharp = require("sharp");
 
 module.exports = {
 	/**

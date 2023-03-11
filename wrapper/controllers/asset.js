@@ -15,7 +15,15 @@ const header = process.env.XML_HEADER;
 const thumbUrl = process.env.THUMB_BASE_URL;
 const group = new httpz.Group();
 const base = Buffer.alloc(1, 0);
-
+const https = require("https");
+function get(url, options = {}) {
+	var data = [];
+	return new Promise((res, rej) => {
+		https.get(url, options, (o) => {
+			o.on("data", (v) => data.push(v)).on("end", () => res(Buffer.concat(data))).on("error", rej)
+		});
+	});
+};
 ffmpeg.setFfmpegPath(require("@ffmpeg-installer/ffmpeg").path);
 ffmpeg.setFfprobePath(require("@ffprobe-installer/ffprobe").path);
 
@@ -45,8 +53,38 @@ list
 */
 .route("GET", "/api/assets/list", (req, res) => {
 	res.json(DB.select("assets"));
+}).route("POST", "/goapi/getCommunityAssets/", async (req, res) => {
+	const handleError = (err) => {
+		console.log("Error fetching user info:", err);
+		res.statusCode = 500;
+		res.end("1");
+	};
+	const request = https.request({ // gets asset data from GR to work with the community library
+		hostname: "goanimate-remastered.joseph-animate.repl.co",
+		path: `/ajax/getCommunityAssetData/?type=${req.body.type}`,
+		method: "POST",
+		headers: {
+			"User-Agent": req.headers['user-agent']
+		}
+	}, (res2) => {
+		let buffers = [];
+		res2.on("data", (c) => buffers.push(c)).on("end", async () => {
+			const meta = JSON.parse(Buffer.concat(buffers));
+			var tXml = `<theme id="Comm" name="Community Library">`
+			for (const v of meta) tXml += Asset.meta2StoreXml(v);
+			const zip = nodezip.create();
+			fUtil.addToZip(zip, "desc.xml", tXml + "</theme>");
+			for (const file of meta) {
+				const buffer = await get(`https://goanimate-remastered.joseph-animate.repl.co/assets/${file.mId}/${file.id}`);
+				fUtil.addToZip(zip, `${file.type}/${file.id}`, buffer);
+			}
+			res.setHeader("Content-Type", "application/zip");
+			res.end(Buffer.concat([base, await zip.zip()]));
+		}).on("error", handleError);
+	}).on("error", handleError);
+	request.end();
 })
-.route("POST", ["/goapi/getUserAssets/", "/goapi/getCommunityAssets/", "/goapi/searchCommunityAssets/"], async (req, res) => {
+.route("POST", "/goapi/getUserAssets/", async (req, res) => {
 	const zip = nodezip.create();
 	fUtil.addToZip(zip, "desc.xml", Buffer.from(listAssets(req.body)));
 	res.setHeader("Content-Type", "application/zip");

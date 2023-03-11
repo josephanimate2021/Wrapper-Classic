@@ -5,6 +5,17 @@ const fUtil = require("../../utils/fileUtil");
 const folder = path.join(__dirname, "../../server", process.env.STORE_URL);
 const group = new httpz.Group();
 const fs = require("fs");
+const nodezip = require("node-zip");
+const https = require("https");
+const asset = require("../models/asset");
+function get(url, options = {}) {
+	var data = [];
+	return new Promise((res, rej) => {
+		https.get(url, options, (o) => {
+			o.on("data", (v) => data.push(v)).on("end", () => res(Buffer.concat(data))).on("error", rej)
+		});
+	});
+};
 
 /*
 list
@@ -20,13 +31,48 @@ group.route("POST", "/goapi/getThemeList/", async (_req, res) => {
 load
 */
 .route("POST", "/goapi/getTheme/", async (req, res) => {
-	console.log(req.body);
 	const id = req.body.themeId;
 	res.assert(id, 500, "Missing one or more fields.");
 	const xmlPath = path.join(folder, `${id}/theme.xml`);
 	const zip = await fUtil.zippy(xmlPath, "theme.xml");
-	res.setHeader("Content-Type", "application/zip");
-	res.end(zip);
+	// create xmls for the Comm folder located in the store folder.
+	const commFolder = path.join(folder, `Comm`);
+	const commPath = path.join(commFolder, `theme.xml`);
+	const commZip = path.join(commFolder, `Comm.zip`);
+	if (!fs.existsSync(commFolder)) fs.mkdirSync(commFolder);
+	const handleError = (err) => {
+		console.log("Error fetching user info:", err);
+		res.statusCode = 500;
+		res.end("1");
+	};
+	const request = https.request({ // gets asset data from GR to work with the community library
+		hostname: "goanimate-remastered.joseph-animate.repl.co",
+		path: `/ajax/getCommunityAssetData/`,
+		method: "POST",
+		headers: {
+			"User-Agent": req.headers['user-agent']
+		}
+	}, (res2) => {
+		let buffers = [];
+		res2.on("data", (c) => buffers.push(c)).on("end", async () => {
+			const meta = JSON.parse(Buffer.concat(buffers));
+			var tXml = `<theme id="Comm" name="Community Library">`
+			for (const v of meta) {
+				tXml += asset.meta2StoreXml(v);
+				const subtype = v.subtype;
+				const assetBuff = await get(`https://goanimate-remastered.joseph-animate.repl.co/assets/${v.mId}/${v.id}`);
+				if (!fs.existsSync(path.join(commFolder, subtype))) fs.mkdirSync(path.join(commFolder, subtype));
+				fs.writeFileSync(path.join(commFolder, `${subtype}/${v.id}`), assetBuff);
+			}
+			fs.writeFileSync(commPath, tXml + "</theme>");
+			const zip2 = nodezip.create();
+			fUtil.addToZip(zip2, "theme.xml", tXml + "</theme>");
+			fs.writeFileSync(commZip, await zip2.zip());
+			res.setHeader("Content-Type", "application/zip");
+			res.end(zip);
+		}).on("error", handleError);
+	}).on("error", handleError);
+	request.end();
 });
 
 module.exports = group;

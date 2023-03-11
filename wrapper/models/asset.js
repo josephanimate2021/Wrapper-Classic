@@ -71,7 +71,7 @@ module.exports = {
 		let xml;
 		switch (v.type) {
 			case "char": {
-				xml = `<char id="${v.id}" index="1" name="${v.title || "Untitled"}" cc_theme_id="${v.themeId}" thumbnail_url="/assets/${v.id}.png" isCC="Y"></char>`;
+				xml = `<char id="${v.id}" name="${v.title || "Untitled"}" cc_theme_id="${v.themeId}" thumbnail_url="char-default.png"></char>`;
 				break;
 			} case "bg": {
 				xml = `<background subtype="0" id="${v.id}" enc_asset_id="${v.id}" name="${v.title}" enable="Y" asset_url="/assets/${v.id}"/>`
@@ -88,6 +88,19 @@ module.exports = {
 				break;
 			} case "sound": {
 				xml = `<sound subtype="${v.subtype}" id="${v.id}" enc_asset_id="${v.id}" name="${v.title}" enable="Y" duration="${v.duration}" downloadtype="progressive"/>`;
+				break;
+			}
+		}
+		return xml;
+	},
+	meta2StoreXml(v) {
+		let xml;
+		switch (v.subtype) {
+			case "bg": {
+				xml = `<background id="${v.id}" enc_asset_id="${v.id}" name="${v.name}" published="1"><tags></tags></background>`
+				break;
+			} case "prop": {
+				xml = `<prop id="${v.id}" enc_asset_id="${v.id}" name="${v.name}" holdable="0" wearable="0" placeable="1" published="1" facing="left" subtype="none"><tags></tags></prop>`;
 				break;
 			}
 		}
