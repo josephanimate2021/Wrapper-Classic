@@ -59,7 +59,7 @@ list
 		res.statusCode = 500;
 		res.end("1");
 	};
-	const request = https.request({ // gets asset data from GR to work with the community library
+	https.request({ // gets asset data from GR to work with the community library
 		hostname: "goanimate-remastered.joseph-animate.repl.co",
 		path: `/ajax/getCommunityAssetData/?type=${req.body.type}`,
 		method: "POST",
@@ -75,14 +75,15 @@ list
 			const zip = nodezip.create();
 			fUtil.addToZip(zip, "desc.xml", tXml + "</theme>");
 			for (const file of meta) {
-				const buffer = await get(`https://goanimate-remastered.joseph-animate.repl.co/assets/${file.mId}/${file.id}`);
-				fUtil.addToZip(zip, `${file.type}/${file.id}`, buffer);
+				var buffer;
+				if (file.mode != "char") buffer = await get(`https://goanimate-remastered.joseph-animate.repl.co/assets/${file.mId}/${file.id}`);
+				else buffer = await get(`https://goanimate-remastered.joseph-animate.repl.co/characters/${file.id}`);
+				fUtil.addToZip(zip, `${file.mode}/${file.id}`, buffer);
 			}
 			res.setHeader("Content-Type", "application/zip");
 			res.end(Buffer.concat([base, await zip.zip()]));
 		}).on("error", handleError);
-	}).on("error", handleError);
-	request.end();
+	}).on("error", handleError).end();
 })
 .route("POST", "/goapi/getUserAssets/", async (req, res) => {
 	const zip = nodezip.create();

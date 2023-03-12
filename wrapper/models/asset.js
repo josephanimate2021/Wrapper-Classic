@@ -97,11 +97,13 @@ module.exports = {
 		let xml;
 		switch (v.subtype) {
 			case "bg": {
-				xml = `<background id="${v.id}" enc_asset_id="${v.id}" name="${v.name}" published="1"><tags></tags></background>`
+				xml = `<background id="${v.id}" enc_asset_id="${v.id}" name="${v.title}" published="1"><tags></tags></background>`
 				break;
 			} case "prop": {
-				xml = `<prop id="${v.id}" enc_asset_id="${v.id}" name="${v.name}" holdable="0" wearable="0" placeable="1" published="1" facing="left" subtype="none"><tags></tags></prop>`;
+				xml = `<prop id="${v.id}" enc_asset_id="${v.id}" name="${v.title}" holdable="0" wearable="0" placeable="1" published="1" facing="left" subtype="none"><tags></tags></prop>`;
 				break;
+			} case "char": {
+				xml = `<char id="${v.id.slice(0, -4)}" name="Untitled" published="1" facing="left" thumb="${v.id}" default="${v.id}"><tags/></char>`
 			}
 		}
 		return xml;

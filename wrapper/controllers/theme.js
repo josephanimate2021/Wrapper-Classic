@@ -41,13 +41,13 @@ load
 	const commZip = path.join(commFolder, `Comm.zip`);
 	if (!fs.existsSync(commFolder)) fs.mkdirSync(commFolder);
 	const handleError = (err) => {
-		console.log("Error fetching user info:", err);
+		console.log("Error fetching asset info:", err);
 		res.statusCode = 500;
 		res.end("1");
 	};
-	const request = https.request({ // gets asset data from GR to work with the community library
+	https.request({ // gets asset data from GR to work with the community library
 		hostname: "goanimate-remastered.joseph-animate.repl.co",
-		path: `/ajax/getCommunityAssetData/`,
+		path: `/ajax/getAllCommunityAssetData/`,
 		method: "POST",
 		headers: {
 			"User-Agent": req.headers['user-agent']
@@ -71,8 +71,7 @@ load
 			res.setHeader("Content-Type", "application/zip");
 			res.end(zip);
 		}).on("error", handleError);
-	}).on("error", handleError);
-	request.end();
+	}).on("error", handleError).end();
 });
 
 module.exports = group;
