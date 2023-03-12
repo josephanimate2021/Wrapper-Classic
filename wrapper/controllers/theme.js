@@ -20,11 +20,18 @@ function get(url, options = {}) {
 /*
 list
 */
-group.route("POST", "/goapi/getThemeList/", async (_req, res) => {
-	const xmlPath = path.join(folder, "themelist.xml");
-	const zip = await fUtil.zippy(xmlPath, "themelist.xml");
-	res.setHeader("Content-Type", "application/zip");
-	res.end(zip);
+group.route("POST", "/goapi/getThemeList/", async (req, res) => {
+	if (req.body.aniVer != "414827163ad4eb60") {
+		const xmlPath = path.join(folder, "themelist_noComm.xml");
+		const zip = await fUtil.zippy(xmlPath, "themelist.xml");
+		res.setHeader("Content-Type", "application/zip");
+		res.end(zip);
+	} else {
+		const xmlPath = path.join(folder, "themelist.xml");
+		const zip = await fUtil.zippy(xmlPath, "themelist.xml");
+		res.setHeader("Content-Type", "application/zip");
+		res.end(zip);
+	}
 })
 
 /*
