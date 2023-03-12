@@ -43,16 +43,10 @@ $("#file").on("change", (event) => {
 check for updates
 */
 function checkForUpdates() {
-	$.get("/api/settings/get_updates")
-		.done((res) => {
-			if (res.updates_available) {
-				const go = confirm("Updates are available! Would you like to visit the release page?");
-				if (go) {
-					window.open("https://github.com/josephanimate2021/GoAnimate-2010-Offline-For-Windows/releases/tag/" + res.tag_name);
-				}
-			} else {
-				alert("No updates available. Check again later.");
-			}
-		})
-		.fail(() => alert("Error getting updates. Try again later."));
+	$.getJSON("/api/settings/get_updates", (res) => {
+		if (res.updates_available) {
+			const go = confirm("Updates are available! Would you like to visit the release page?");
+			if (go) window.open("https://github.com/josephanimate2021/Wrapper-Classic/releases/tag/" + res.tag_name);
+		} else alert("No updates available. Check again later.");
+	});
 }

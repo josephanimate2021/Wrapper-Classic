@@ -51,31 +51,24 @@ check for updates
 	};
 	https.get({
 		host: "api.github.com",
-		path: "/repos/josephanimate2021/GoAnimate-2010-Offline-For-Windows/tags",
+		path: "/repos/josephanimate2021/Wrapper-Classic/tags",
 		headers: {
 			"User-Agent": req.headers['user-agent']
 		}
 	}, (res2) => {
 		let buffers = [];
-		res2.on("data", (c) => buffers.push(c));
-		res2.on("end", () => {
-			const buffer = Buffer.concat(buffers);
-			let json;
+		res2.on("data", (c) => buffers.push(c)).on("end", () => {
+			const json = JSON.parse(Buffer.concat(buffers));
 			try {
-				json = JSON.parse(buffer.toString());
-			} catch (err) {
-				console.log("Error parsing JSON while checking for updates:", err);
-				console.log("Response:", buffer.toString());
-				res.statusCode = 400;
-				res.end();
+				const latest = json[0].name;
+				if (+(latest.substring(1).replace(/\./, "")) > +(process.env.WRAPPER_VER.replace(/\./, ""))) {
+					res.json({ updates_available: true, tag_name: latest });
+				} else res.json({ updates_available: false });
+			} catch (e) {
+				console.log(e);
+				res.json({ updates_available: false });
 			}
-
-			const latest = json[0].name;
-			if (+(latest.substring(1).replace(/\./, "")) > +(process.env.WRAPPER_VER.replace(/\./, ""))) {
-				res.json({ updates_available: true, tag_name: latest });
-			} else res.json({ updates_available: false });
-		});
-		res2.on("error", handleError);
+		}).on("error", handleError);
 	}).on("error", handleError);
 });
 
