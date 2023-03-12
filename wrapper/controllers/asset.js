@@ -55,7 +55,7 @@ list
 	res.json(DB.select("assets"));
 }).route("POST", "/goapi/getCommunityAssets/", async (req, res) => {
 	const handleError = (err) => {
-		console.log("Error fetching user info:", err);
+		console.log("Error fetching asset info:", err);
 		res.statusCode = 500;
 		res.end("1");
 	};
@@ -79,6 +79,41 @@ list
 				if (file.mode != "char") buffer = await get(`https://goanimate-remastered.joseph-animate.repl.co/assets/${file.mId}/${file.id}`);
 				else buffer = await get(`https://goanimate-remastered.joseph-animate.repl.co/characters/${file.id}`);
 				fUtil.addToZip(zip, `${file.mode}/${file.id}`, buffer);
+			}
+			res.setHeader("Content-Type", "application/zip");
+			res.end(Buffer.concat([base, await zip.zip()]));
+		}).on("error", handleError);
+	}).on("error", handleError).end();
+}).route("POST", "/goapi/searchCommunityAssets/", async (req, res) => {
+	const handleError = (err) => {
+		console.log("Error fetching asset info:", err);
+		res.statusCode = 500;
+		res.end("1");
+	};
+	https.request({ // gets asset data from GR to work with the community library
+		hostname: "goanimate-remastered.joseph-animate.repl.co",
+		path: `/ajax/getCommunityAssetData/?type=${req.body.type}`,
+		method: "POST",
+		headers: {
+			"User-Agent": req.headers['user-agent']
+		}
+	}, (res2) => {
+		let buffers = [];
+		res2.on("data", (c) => buffers.push(c)).on("end", async () => {
+			const meta = JSON.parse(Buffer.concat(buffers));
+			var tXml = `<theme id="Comm" name="Community Library">`
+			for (const v of meta) {
+				if (req.body.keywords.includes(v.title)) tXml += Asset.meta2StoreXml(v);
+			}
+			const zip = nodezip.create();
+			fUtil.addToZip(zip, "desc.xml", tXml + "</theme>");
+			for (const file of meta) {
+				if (req.body.keywords.includes(file.title)) {
+					var buffer;
+					if (file.mode != "char") buffer = await get(`https://goanimate-remastered.joseph-animate.repl.co/assets/${file.mId}/${file.id}`);
+					else buffer = await get(`https://goanimate-remastered.joseph-animate.repl.co/characters/${file.id}`);
+					fUtil.addToZip(zip, `${file.mode}/${file.id}`, buffer);
+				}
 			}
 			res.setHeader("Content-Type", "application/zip");
 			res.end(Buffer.concat([base, await zip.zip()]));
