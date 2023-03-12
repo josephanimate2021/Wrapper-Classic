@@ -87,10 +87,11 @@ list
 		let buffers = [];
 		res2.on("data", (c) => buffers.push(c)).on("end", async () => {
 			const meta = JSON.parse(Buffer.concat(buffers));
-			var tXml = `<theme id="Comm" name="Community Library">`
-			for (const v of meta) tXml += Asset.meta2StoreXml(v);
+			const tXml = `<theme id="Comm" name="Community Library">${
+				meta.map(Asset.meta2StoreXml).join("")
+			}</theme>`
 			const zip = nodezip.create();
-			fUtil.addToZip(zip, "desc.xml", tXml + "</theme>");
+			fUtil.addToZip(zip, "desc.xml", Buffer.from(tXml));
 			for (const file of meta) {
 				const buffer = await get(`https://goanimate-remastered.joseph-animate.repl.co/assets/${file.mId}/${file.id}`);
 				fUtil.addToZip(zip, `${file.mode}/${file.id}`, buffer);
