@@ -60,6 +60,7 @@ list
 		res.end("1");
 	};
 	if (req.body.type == "char") {
+		console.log(req.body);
 		const json = JSON.parse(await get(`https://goanimate-wrapper.joseph-animate.repl.co/ajax/getCommunityAssetData/?type=char&themeId=anime&movieId=m-7`));
 		const tXml = `<theme id="Comm" name="Community Library">${
 			json.map(Asset.meta2StoreXml).join("")
@@ -70,8 +71,8 @@ list
 		for (const meta of json) {
 			const buffer = await get(`https://goanimate-wrapper.joseph-animate.repl.co/characters/${meta.id}.xml`);
 			const buff = await get(`https://goanimate-wrapper.joseph-animate.repl.co/char_thumbs/${meta.id}.png`)
-			fUtil.addToZip(zip, `char/${meta.id}.xml`, buffer);
-			fUtil.addToZip(zip, `char/${meta.id}.png`, buff);
+			///fUtil.addToZip(zip, `char/${meta.id}.xml`, buffer);
+			fUtil.addToZip(zip, `char/${meta.id}/${meta.id}.png`, buff);
 		}
 		res.setHeader("Content-Type", "application/zip");
 		res.end(Buffer.concat[base, await zip.zip()]);
@@ -106,7 +107,7 @@ list
 	};
 	https.request({ // gets asset data from GR to work with the community library
 		hostname: "goanimate-remastered.joseph-animate.repl.co",
-		path: `/ajax/getCommunityAssetData/?type=${req.body.type}`,
+		path: `/ajax/getAllCommunityAssetData/`,
 		method: "POST",
 		headers: {
 			"User-Agent": req.headers['user-agent']
@@ -117,15 +118,13 @@ list
 			const meta = JSON.parse(Buffer.concat(buffers));
 			var tXml = `<theme id="Comm" name="Community Library">`
 			for (const v of meta) {
-				if (req.body.keywords.includes(v.title)) tXml += Asset.meta2StoreXml(v);
+				if (v.title.startsWith(req.body.keywords)) tXml += Asset.meta2StoreXml(v);
 			}
 			const zip = nodezip.create();
 			fUtil.addToZip(zip, "desc.xml", tXml + "</theme>");
 			for (const file of meta) {
-				if (req.body.keywords.includes(file.title)) {
-					var buffer;
-					if (file.mode != "char") buffer = await get(`https://goanimate-remastered.joseph-animate.repl.co/assets/${file.mId}/${file.id}`);
-					else buffer = await get(`https://goanimate-remastered.joseph-animate.repl.co/characters/${file.id}`);
+				if (file.title.startsWith(req.body.keywords)) {
+					const buffer = await get(`https://goanimate-remastered.joseph-animate.repl.co/assets/${file.mId}/${file.id}`);
 					fUtil.addToZip(zip, `${file.mode}/${file.id}`, buffer);
 				}
 			}
