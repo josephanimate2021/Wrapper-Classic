@@ -36,6 +36,7 @@ load
 	const xmlPath = path.join(folder, `${id}/theme.xml`);
 	const zip = await fUtil.zippy(xmlPath, "theme.xml");
 	// create xmls for the Comm folder located in the store folder.
+	// i have no idea why i put all of this here. i guess that i could use this to help out movie parsing after someone uses community assets.
 	const commFolder = path.join(folder, `Comm`);
 	const commPath = path.join(commFolder, `theme.xml`);
 	const commZip = path.join(commFolder, `Comm.zip`);
