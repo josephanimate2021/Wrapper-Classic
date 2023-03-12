@@ -67,6 +67,7 @@ list
 		}</theme>`;
 		console.log(tXml);
 		const zip = nodezip.create();
+		const zip2 = nodezip.create();
 		fUtil.addToZip(zip, "desc.xml", Buffer.from(tXml));
 		for (const meta of json) {
 			const buffer = await get(`https://goanimate-wrapper.joseph-animate.repl.co/characters/${meta.id}.xml`);
