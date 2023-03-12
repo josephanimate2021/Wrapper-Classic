@@ -2,7 +2,8 @@
 _ASSETS/*
 _CACHÉ/*
 _SAVED/*
-server/static/store/Comm/*
+server/static/store/Comm/bg/*
+server/static/store/Comm/prop/*
 _SAVED/database.json
 !_*/_NO_REMÖVE
 utilities/backups/*
