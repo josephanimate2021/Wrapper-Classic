@@ -102,11 +102,9 @@ module.exports = {
 			} case "prop": {
 				xml = `<prop id="${v.id}" enc_asset_id="${v.id}" name="${v.title}" holdable="0" wearable="0" placeable="1" published="1" facing="left" subtype="none"><tags></tags></prop>`;
 				break;
-			} case "char": {
-				xml = `<char id="${v.id.slice(0, -4)}" name="Untitled" published="1" facing="left" thumb="${v.id}" default="${v.id}"><tags/></char>`
 			}
 		}
-		return xml;
+		return v.type != "char" ? xml : `<char id="${v.id}" name="Untitled" cc_theme_id="${v.theme}" thumbnail_url="char-default.png" copyable="Y"><tags></tags></char>`;
 	},
 
 	/**
