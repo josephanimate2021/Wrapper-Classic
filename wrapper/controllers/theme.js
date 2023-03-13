@@ -63,8 +63,9 @@ load
 	}, (res2) => {
 		let buffers = [];
 		res2.on("data", (c) => buffers.push(c)).on("end", async () => {
-			const meta = JSON.parse(Buffer.concat(buffers));
-			var tXml = `<theme id="Comm" name="Community Library"><effect id="328995073.swf" name="bubbles" type="ANIME" resize="false" move="false" published="1"><tags></tags></effect><effect id="328993953.swf" name="bubbles" type="ANIME" resize="false" move="false" published="1"><tags></tags></effect><effect id="823760.swf" name="warpspeed" type="ANIME" resize="false" move="false" published="1"><tags></tags></effect><effect id="1211151.swf" name="arrowfx" type="ANIME" resize="false" move="false" published="1"><tags></tags></effect><char id="1147194" name="BLUE CENTURION=SECTION31" published="1" facing="left" thumb="1147195.swf" default="1147195.swf"><tags/><action id="1147195.swf" name="STAND RIGHT"/><action id="1147200.swf" name="FIRE RIGHT"/><action id="1147201.swf" name="POINT DISRUPTOR"/></char>
+			try {
+				const meta = JSON.parse(Buffer.concat(buffers));
+				var tXml = `<theme id="Comm" name="Community Library"><effect id="328995073.swf" name="bubbles" type="ANIME" resize="false" move="false" published="1"><tags></tags></effect><effect id="328993953.swf" name="bubbles" type="ANIME" resize="false" move="false" published="1"><tags></tags></effect><effect id="823760.swf" name="warpspeed" type="ANIME" resize="false" move="false" published="1"><tags></tags></effect><effect id="1211151.swf" name="arrowfx" type="ANIME" resize="false" move="false" published="1"><tags></tags></effect><char id="1147194" name="BLUE CENTURION=SECTION31" published="1" facing="left" thumb="1147195.swf" default="1147195.swf"><tags/><action id="1147195.swf" name="STAND RIGHT"/><action id="1147200.swf" name="FIRE RIGHT"/><action id="1147201.swf" name="POINT DISRUPTOR"/></char>
 			<char id="1867628" name="MUTANTDALEK by solarbaby" published="1" facing="left" thumb="1867629.swf" default="1867629.swf"><tags>mutant dalekdead</tags><action id="1867629.swf" name="mutant dalekdead"/><action id="1867631.swf" name="MOVING"/></char>
 			<char id="1757567" name="DEEPSPACENINE by solarbaby" published="1" facing="left" thumb="1757568.swf" default="1757568.swf"><tags/><action id="1757568.swf" name="DEFAULT"/><action id="1757573.swf" name="firephaser"/></char>
 			<char id="547437" name="Bamboo" published="1" facing="left" thumb="547438.swf" default="547438.swf"><tags/><action id="547438.swf" name="standing"/><action id="547439.swf" name="sit"/><action id="547440.swf" name="sit_talk"/><action id="547442.swf" name="walk"/><action id="554124.swf" name="talk"/></char>
@@ -141,22 +142,35 @@ load
 			  </char>
 			  <char id="android" name="Android" thumb="android.swf" facing="left" default="android.swf" motion="android.swf" enable="Y" is_premium="N" aid="237" money="0" sharing="0">
 				<action aid="6928" enable="Y" name="Be a phone" id="android.swf" totalframe="1" loop="Y"/>
-			  </char>`
-			for (const v of meta) {
-				tXml += asset.meta2StoreXml(v);
-				const subtype = v.subtype;
-				const assetBuff = await get(`https://goanimate-remastered.joseph-animate.repl.co/assets/${v.mId}/${v.id}`);
-				if (!fs.existsSync(path.join(commFolder, subtype))) fs.mkdirSync(path.join(commFolder, subtype));
-				fs.writeFileSync(path.join(commFolder, `${subtype}/${v.id}`), assetBuff);
+			  </char>`;
+				for (const v of meta) {
+					tXml += asset.meta2StoreXml(v);
+					const subtype = v.subtype;
+					const assetBuff = await get(`https://goanimate-remastered.joseph-animate.repl.co/assets/${v.mId}/${v.id}`);
+					if (!fs.existsSync(path.join(commFolder, subtype))) fs.mkdirSync(path.join(commFolder, subtype));
+					fs.writeFileSync(path.join(commFolder, `${subtype}/${v.id}`), assetBuff);
+				}
+				fs.writeFileSync(commPath, tXml + "</theme>");
+				const zip2 = nodezip.create();
+				fUtil.addToZip(zip2, "theme.xml", tXml + "</theme>");
+				fs.writeFileSync(commZip, await zip2.zip());
+				res.setHeader("Content-Type", "application/zip");
+				res.end(zip);
+			} catch (e) { // loads a theme xml despite an error
+				console.log(e);
+				res.setHeader("Content-Type", "application/zip");
+				res.end(zip);
 			}
-			fs.writeFileSync(commPath, tXml + "</theme>");
-			const zip2 = nodezip.create();
-			fUtil.addToZip(zip2, "theme.xml", tXml + "</theme>");
-			fs.writeFileSync(commZip, await zip2.zip());
+		}).on("error", (e) => { // loads a theme xml despite an error
+			handleError(e);
 			res.setHeader("Content-Type", "application/zip");
 			res.end(zip);
-		}).on("error", handleError);
-	}).on("error", handleError).end();
+		});
+	}).on("error", (e) => { // loads a theme xml despite an error
+		handleError(e);
+		res.setHeader("Content-Type", "application/zip");
+		res.end(zip);
+	}).end();
 });
 
 module.exports = group;
