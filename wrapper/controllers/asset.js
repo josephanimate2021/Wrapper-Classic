@@ -11,6 +11,7 @@ const httpz = require("@octanuary/httpz")
 const mime = require("mime-types");
 const path = require("path");
 const folder = path.join(__dirname, "../../", process.env.ASSET_FOLDER);
+const sFolder = path.join(__dirname, "../../server/static/store");
 const tempfile = require("tempfile");
 // vars
 const fileTypes = require("../data/fileTypes.json");
@@ -32,6 +33,9 @@ function listAssets(filters) {
 	const files = DB.select("assets", filters);
 	return `${header}<ugc more="0">${
 		files.map(Asset.meta2Xml).join("")}</ugc>`;
+}
+function listCommunityAssets(data) {
+	return `${header}<theme id="Comm" name="Community Library">${Asset.meta2CommunityXml(data.type)}</theme>`;
 }
 
 group
@@ -71,7 +75,7 @@ group
 		res.setHeader("Content-Type", "application/xml");
 		res.end(listAssets(filters));
 	})
-	.route("POST", ["/goapi/getUserAssets/", "/goapi/getCommunityAssets/", "/goapi/searchCommunityAssets/"], async (req, res) => {
+	.route("POST", "/goapi/getUserAssets/", async (req, res) => {
 		const zip = nodezip.create();
 		fUtil.addToZip(zip, "desc.xml", Buffer.from(listAssets(req.body)));
 		const files = DB.select("assets", req.body);
@@ -92,6 +96,70 @@ group
 		res.setHeader("Content-Type", "application/zip");
 		res.write(base);
 		res.end(await zip.zip());
+	})
+	.route("POST", "/goapi/getCommunityAssets/", async (req, res) => {
+		const zip = nodezip.create();
+		fUtil.addToZip(zip, "desc.xml", Buffer.from(listCommunityAssets(req.body)));
+		const folder = path.join(sFolder, `Comm/${req.body.type}`);
+		if (req.body.type == "char") {
+			fs.readdirSync(path.join(sFolder, `Comm/char`)).forEach(folder => {
+				fs.readdirSync(path.join(sFolder, `Comm/char/${folder}`)).forEach(file => {
+					if (file.includes("head")) {
+						fs.readdirSync(path.join(sFolder, `Comm/char/${folder}/head`)).forEach(file2 => {
+							const buffer = fs.readFileSync(path.join(sFolder, `Comm/char/${folder}/head/${file2}`));
+							fUtil.addToZip(zip, `char/${folder}/head/${file2}`, buffer);
+						});
+					} else {
+						const buffer = fs.readFileSync(path.join(sFolder, `Comm/char/${folder}/${file}`));
+						fUtil.addToZip(zip, `char/${folder}/${file}`, buffer);
+					}
+				});
+			});
+		} else {
+			fs.readdirSync(folder).forEach(file => {
+				if (req.body.type == "prop") {
+					if (file.includes("test")) {
+						fs.readdirSync(path.join(folder, `test`)).forEach(file2 => {
+							const buffer = fs.readFileSync(path.join(folder, `test/${file2}`));
+							fUtil.addToZip(zip, `prop/test/${file2}`, buffer);
+						})
+					} else if (file.includes("msp_zap_switch_dangerous_box_closed")) {
+						fs.readdirSync(path.join(folder, `msp_zap_switch_dangerous_box_closed`)).forEach(file2 => {
+							const buffer = fs.readFileSync(path.join(folder, `msp_zap_switch_dangerous_box_closed/${file2}`));
+							fUtil.addToZip(zip, `prop/msp_zap_switch_dangerous_box_closed/${file2}`, buffer);
+						})
+					} else {
+						const buffer = fs.readFileSync(path.join(folder, file));
+						fUtil.addToZip(zip, `prop/${file}`, buffer);
+					}
+				} else {
+					const buffer = fs.readFileSync(path.join(folder, file));
+					fUtil.addToZip(zip, `${req.body.type}/${file}`, buffer);
+				}
+			})
+		}
+		res.setHeader("Content-Type", "application/zip");
+		res.end(Buffer.concat([base, await zip.zip()]));
+	})
+	.route("POST", "/goapi/searchCommunityAssets/", async (req, res) => {
+		const zip = nodezip.create();
+		const folder = path.join(sFolder, `Comm`);
+		var tXml = '<theme id="Comm" name="Community Library">'
+		fs.readdirSync(folder).forEach(type => {
+			if (type != "theme.xml" && type != "Comm.zip" && type != "README.txt") {
+				fs.readdirSync(path.join(folder, type)).forEach(file => {
+					if (file.startsWith(req.body.keywords)) {
+						tXml += Asset.meta2StoreXml({
+							type,
+							id: file
+						});
+					}
+				})
+			}
+		})
+		fUtil.addToZip(zip, "desc.xml", tXml + '</theme>');
+		res.setHeader("Content-Type", "application/zip");
+		res.end(Buffer.concat([base, await zip.zip()]));
 	})
 	.route("POST", "/api_v2/assets/imported", (req, res) => {
 		res.assert(req.body.data.type, 400, { status: "error" });

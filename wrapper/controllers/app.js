@@ -92,9 +92,9 @@ group
 			ctc: "go",
 			isEmbed: 1,
 			isLogin: "Y",
-            		username:"Jerry",
-            		usemail:"jerryguy69420@gmail.com",
-            		userId: '28989',
+			username:"Jerry",
+            uemail:"jerryguy69420@gmail.com",
+            userId: '28989',
 			m_mode: "school",
 			page: "",
 			siteId: "go",
@@ -172,7 +172,7 @@ group
 		const { IS_WIDE, CLIENT_THEME, VERSION } = DB.select();
 		discord( VERSION + " Video Maker");
 		let flashvars = {
-            		tts_enabled: 1,
+            tts_enabled: 1,
 			credits: 100,
 			uisa: "Y",
 			ve: "Y",
@@ -212,9 +212,9 @@ group
 		discord("Video Maker");
 		const { IS_WIDE } = DB.select();
 		let flashvars = {
-            		tts_enabled: true,
-            		username:"Jerry",
-            		usemail:"jerryguy69420@gmail.com",
+			tts_enabled: true,
+			username:"Jerry",
+			uemail:"jerryguy69420@gmail.com",
 			userId: '28989',
 			appCode: "go",
 			collab: 1,
@@ -226,7 +226,7 @@ group
 			nextUrl: "/",
 			page: "",
 			retut: 1,
-			siteId: "go",
+			siteId: "school",
 			tray: "custom",
 			tlang: "en_US",
 			ut: 60,
