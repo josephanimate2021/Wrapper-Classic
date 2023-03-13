@@ -47,7 +47,7 @@ group
 	})
 	// flash pages
 	.route("GET", "/oldcc", async (req, res) => {
-		const { VERSION, CLIENT_THEME } = DB.select();
+		const { VERSION, CLIENT_THEME, animation } = DB.select();
 		discord("Character Creator");
 		let flashvars = {
 			appCode: "go",
@@ -70,7 +70,7 @@ group
 		res.render("app/char", {
 			title: "Character Creator",
 			attrs: {
-				data: "http://localhost:4343/animation/" + VERSION + "/cc_old.swf",
+				data: "http://localhost:4343/animation/" + VERSION || animation + "/cc_old.swf",
 				type: "application/x-shockwave-flash", 
 				id: "char_creator", 
 				width: "960", 
@@ -80,7 +80,7 @@ group
 			params: {
 				flashvars,
 				allowScriptAccess: "always",
-				movie: "http://localhost:4343/animation/" + VERSION + "/cc_old.swf",
+				movie: "http://localhost:4343/animation/" + VERSION || animation + "/cc_old.swf",
 			},
 			object: toObjectString
 		});
@@ -178,7 +178,6 @@ group
 			ve: "Y",
 			ctc: CLIENT_THEME,
 			appCode: "go",
-			ctc: CLIENT_THEME,
 			isLogin: "Y",
 			siteId: "go",
 			tray: "sf",

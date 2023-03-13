@@ -15,7 +15,7 @@ const group = new httpz.Group();
 group
 	// list
 	.route("POST", "/goapi/getThemeList/", async (req, res) => {
-		const filepath = "themelist.xml"; 
+		const filepath = req.body.aniVer != "2013" ? "themelist.xml" : "themelist_noComm.xml"; 
 		const xmlPath = path.join(folder, filepath);
 		const zip = await fUtil.zippy(xmlPath, "themelist.xml");
 		res.setHeader("Content-Type", "application/zip");
