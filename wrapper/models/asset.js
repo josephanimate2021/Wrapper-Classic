@@ -104,7 +104,7 @@ module.exports = {
 				break;
 			}
 		}
-		return v.type != "char" ? xml : `<char id="${v.id}" name="Untitled" cc_theme_id="${v.theme}" thumbnail_url="char-default.png" copyable="Y"><tags></tags></char>`;
+		return v.type != "char" ? xml : `<char id="${v.id}" name="Untitled" cc_theme_id="${v.themeId}" thumbnail_url="char-default.png" copyable="Y"><tags></tags></char>`;
 	},
 
 	/**
