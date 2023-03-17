@@ -435,8 +435,8 @@ save
 			let { ptype } = req.body;
 			// verify the prop type
 			switch (ptype) {
-				case "placeable":
 				case "wearable":
+				case "headable":
 				case "holdable":
 					info.ptype = ptype;
 				default:
