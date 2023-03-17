@@ -4184,6 +4184,7 @@ group.route("POST", "/goapi/getThemeList/", async (req, res) => {
 		  fUtil.addToZip(zip, 'theme.xml', tThemeXml);
 		  /*fs.readdirSync(path.join(folder, 'cc_store/family')).forEach(folder2 => {*/
 			fUtil.addToZip(zip, 'char/cc_theme.xml', fs.readFileSync(path.join(folder, `cc_store/family/cc_theme.xml`)));
+			// i believe that you have to add the actions as well???
 		  //})
 		  fs.writeFileSync(tThemeZip, await zip.zip());
 	}
