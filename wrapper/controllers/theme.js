@@ -21,7 +21,7 @@ function get(url, options = {}) {
 list
 */
 group.route("POST", "/goapi/getThemeList/", async (req, res) => {
-	if (req.body.aniVer != "414827163ad4eb60") {
+	if (req.body.aniVer != "414827163ad4eb60" && req.body.aniVer != "930") {
 		const xmlPath = path.join(folder, "themelist_noComm.xml");
 		const zip = await fUtil.zippy(xmlPath, "themelist.xml");
 		res.setHeader("Content-Type", "application/zip");

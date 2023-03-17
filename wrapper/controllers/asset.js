@@ -183,9 +183,7 @@ list
 				let buffers = [];
 				res2.on("data", (c) => buffers.push(c)).on("end", async () => {
 					const meta = JSON.parse(Buffer.concat(buffers));
-					const tXml = `<theme id="Comm" name="Community Library">${
-						meta.map(Asset.meta2StoreXml).join("")
-					}</theme>`
+					const tXml = `<theme id="Comm" name="Community Library">${meta.map(Asset.meta2StoreXml).join("")}</theme>`
 					const zip = nodezip.create();
 					fUtil.addToZip(zip, "desc.xml", Buffer.from(tXml));
 					for (const file of meta) {
@@ -235,31 +233,52 @@ list
 .route("POST", "/goapi/getUserAssets/", async (req, res) => {
 	const zip = nodezip.create();
 	fUtil.addToZip(zip, "desc.xml", Buffer.from(listAssets(req.body)));
+	const files = DB.select("assets", {
+		type: req.body.type,
+		themeId: "ugc"
+	});
+	for (const file of files) {
+		const buffer = Asset.load(file.id);
+		fUtil.addToZip(zip, `${file.type}/${file.id}`, buffer);
+	}
 	res.setHeader("Content-Type", "application/zip");
 	res.write(base);
 	res.end(await zip.zip());
 }).route("POST", "/goapi/getUserAssetsXml/", async (req, res) => {
-	let themeId;
-	switch (req.body.themeId) {
-		case "custom":
-			themeId = "family";
-			break;
-		case "action":
-		case "animal":
-		case "botdf":
-		case "space":
-			themeId = "cc2";
-			break;
-		default:
-			themeId = req.body.themeId;
-	}
-
-	const filters = {
-		themeId,
-		type: "char"
-	};
+	let filters, themeId;
+	if (req.body.type == "char") {
+		switch (req.body.themeId) {
+			case "custom": {
+				themeId = "family";
+				break;
+			}
+			case "action":
+			case "animal":
+			case "botdf":
+			case "space": {
+				themeId = "cc2";
+				break;
+			} default: themeId = req.body.themeId;
+		}
+		filters = {
+			themeId,
+			type: "char"
+		};
+	} else filters = req.body;
 	res.setHeader("Content-Type", "application/xml");
 	res.end(listAssets(filters));
+}).route("POST", ["/api_v2/assets/imported","/api_v2/assets/team","/api_v2/assets/shared"], (req, res) => {
+	res.assert(req.body.data.type, 400, { status: "error" });
+	if (req.body.data.type == "prop") req.body.data.subtype ||= 0;
+
+	// what's even the point of this if it still uses an xml
+	// it's dumb
+	res.json({
+		status: "ok",
+		data: {
+			xml: listAssets(req.body.data)
+		}
+	});
 })
 
 /*
