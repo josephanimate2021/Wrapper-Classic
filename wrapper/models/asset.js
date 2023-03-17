@@ -83,7 +83,7 @@ module.exports = {
 				if (v.subtype == "video") {
 					xml = `<prop subtype="video" id="${v.id}" enc_asset_id="${v.id}" name="${v.title}" enable="Y" placeable="1" facing="left" width="${v.width}" height="${v.height}" asset_url="/assets/${v.id}" thumbnail_url="/assets/${v.id.slice(0, -3) + "png"}"/>`;
 				} else {
-					xml = `<prop subtype="0" id="${v.id}" enc_asset_id="${v.id}" name="${v.title}" enable="Y" ${v.ptype}="1" facing="left" width="0" height="0" asset_url="/assets/${v.id}"/>`;
+					xml = `<prop subtype="0" id="${v.id}" enc_asset_id="${v.id}" name="${v.title}" enable="Y" ${v.ptype != "placeable" ? `${v.ptype}="1"` : ""} placeable="1" facing="left" width="0" height="0" asset_url="/assets/${v.id}"/>`;
 				}
 				break;
 			} case "sound": {
