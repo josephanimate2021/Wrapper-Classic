@@ -336,15 +336,13 @@ thumb
 /*
 studio redirect
 */
-.route("GET", /\/go\/studio\/theme\/([\S]+)/, (req, res) => res.redirect(`/go_full?tray=${
-	req.matches[1]
-}&older=1`)).route("POST", "/goapi/updateAsset/", (req, res) => {
+.route("GET", /\/go\/studio\/theme\/([\S]+)/, (req, res) => res.redirect(`/go_full?tray=${req.matches[1]}&older=1`)).route("POST", "/goapi/updateAsset/", (req, res) => {
 	const id = req.body.assetId;
 	const title = req.body.title;
 	const tags = req.body.tag;
 	if (!id || !title || !tags) {
 		res.statusCode = 400;
-		res.end("malformed");
+		res.end("1");
 	}
 
 	const update = {
@@ -352,10 +350,10 @@ studio redirect
 		title: title
 	}
 	if (DB.update("assets", id, update)) {
-		res.end("1");
+		res.end("0");
 	} else {
 		res.statusCode = 404;
-		res.json("404 Not Found");
+		res.end("1");
 	}
 })
 
