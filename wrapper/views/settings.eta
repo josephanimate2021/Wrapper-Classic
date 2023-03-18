@@ -20,8 +20,6 @@
 				<div class="tab_buttons">
 					<h1 id="settings">Settings</h1>
 					<a href="#" class="selected" data-triggers="0">Features</a>
-					<a href="#" data-triggers="1">Appearance</a>
-					<a href="#" data-triggers="2">Your Library</a>
 				</div>
 				<nav class="tab" style="display:block">
 					<h2>Features</h2>
@@ -67,27 +65,6 @@
 					However, you can toggle this setting to make it any version you like.<br/>
 					<select class="setting" id="animation"></select>
 				</nav>
-				<nav class="tab">
-					<h2>Appearance</h2>
-
-					<h3>Dark mode</h3>
-					<p>Self-explanatory. Makes the Video List dark.</p>
-					<input class="setting" type="checkbox" id="DARK_MODE" data-local="true"></input>
-				</nav>
-				<nav class="tab">
-					<h2>Your Library</h2>
-
-					<nav id="importer">
-						<nav id="import_head">
-							<button id="import-toggle" onclick="document.getElementById('importer-files').click()" class="import-button">UPLOAD FILES</button>
-							<button onclick="document.getElementById('char-file').click()" class="import-button">UPLOAD A CHARACTER</button>
-							<form>
-								<input id="importer-files" type="file" name="file" title="Upload Files" accept=".mp3,.wav,.ogg,.wma,.swf,.gif,.png,.jpg,.mp4" style="display:none" />
-							</form>
-						</nav>
-						<div id="importer-queue"></div>
-					</nav>
-				</nav>
 			</nav>
 		</main>
 
@@ -98,7 +75,7 @@
 		<%~ includeFile("./includes/footer", { env: it.env }) %>
 	</body>
 
-	<script src="/pages/js/importer.js"></script>
+	<script src="/pages/js/studio.js"></script>
 	<script src="/pages/js/filesize.js"></script>
 	<script>
 	    $.getJSON("/api/animations/list", (d) => {
