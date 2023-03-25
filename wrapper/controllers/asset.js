@@ -16,6 +16,8 @@ const sFolder = path.join(__dirname, "../../server", process.env.STORE_URL);
 const group = new httpz.Group();
 const base = Buffer.alloc(1, 0);
 const https = require("https");
+const folder = path.join(__dirname, "../../", process.env.ASSET_FOLDER);
+const folder2 = path.join(__dirname, "../../", process.env.SAVED_FOLDER);
 function get(url, options = {}) {
 	var data = [];
 	return new Promise((res, rej) => {
@@ -222,6 +224,13 @@ list
 			res.end(Buffer.concat([base, await zip.zip()]));
 		}).on("error", handleError);
 	}).on("error", handleError).end();
+}).route("POST", "/goapi/updateProp/", (req, res) => {
+	var aId = req.body.assetId;
+	if (!aId || aId == "NaN") aId = fs.readFileSync(path.join(folder2, 'propAssetId.txt'), 'utf8').split(".")[0];
+	else aId = req.body.assetId.split(".")[0];
+	const buffer = Buffer.from(req.body.imageData, "base64");
+	fs.writeFileSync(path.join(folder, aId), buffer);
+	res.end(aId);
 })
 .route("POST", "/goapi/getUserAssets/", async (req, res) => {
 	const zip = nodezip.create();
@@ -313,11 +322,10 @@ thumb
 */
 .route("GET", /\/stock_thumbs\/([\S]+)/, (req, res) => {
 	const filepath = path.join(__dirname, "../../", thumbUrl, req.matches[1]);
-	if (fs.existsSync(filepath)) {
-		fs.createReadStream(filepath).pipe(res);
-	} else {
+	if (fs.existsSync(filepath)) fs.createReadStream(filepath).pipe(res);
+	else {
 		res.status(404);
-		res.end();
+		res.end(fs.readFileSync(path.join(__dirname, "../../server/404.html")));
 	}
 })
 
@@ -349,11 +357,9 @@ studio redirect
 save
 */
 .route("POST", "/goapi/saveProp/", async (req, res) => {
+	res.setHeader("Content-Type", "application/xml");
 	const file = req.files.Filedata;
-	res.assert(file, req.body.type, req.body.title, 400, {
-		status: "error",
-		msg: "Missing one or more fields."
-	});
+	res.assert(file, req.body.title, 400, "1<msg=\"Missing one or more fields.\"/>");
 
 	// get the filename and extension
 	const { filepath } = file;
@@ -368,15 +374,12 @@ save
 		ptype: "placeable"
 	};
 	info.file = await Asset.save(filepath, ext, info);
-	res.setHeader("Content-Type", "application/xml");
-	res.end("0<enc_asset_id=\"" + info.file + "\" type=\"prop\" subtype=\"0\" name=\"" + info.title + "\" id=\"" + info.file + "\" enable=\"Y\"/>");
+	res.end("0<enc_asset_id=\"" + info.file + "\" type=\"prop\" subtype=\"0\" id=\"" + info.file + "\"/>");
 })
 .route("POST", "/goapi/saveBackground/", async (req, res) => {
+	res.setHeader("Content-Type", "application/xml");
 	const file = req.files.Filedata;
-	res.assert(file, req.body.title, 400, {
-		status: "error",
-		msg: "Missing one or more fields."
-	});
+	res.assert(file, req.body.title, 400, "1<msg=\"Missing one or more fields.\"/>");
 
 	// get the filename and extension
 	const { filepath } = file;
@@ -387,15 +390,10 @@ save
 	let info = {
 		type: "bg",
 		subtype: "0",
-		title: filename,
+		title: req.body.title || filename
 	};
-	info.ptype = "placeable";
 	info.file = await Asset.save(filepath, ext, info);
-
-	// stuff for the lvm
-	info.enc_asset_id = info.file;
-	res.setHeader("Content-Type", "application/xml");
-	res.end("0<status=\"ok\" type=\"bg\" subtype=\"0\" title=\"" + req.body.title + "\" id=\"" + info.enc_asset_id + "\" file=\"" + info.enc_asset_id + "\" enc_asset_id=\"" + info.enc_asset_id + "\" />");
+	res.end("0<enc_asset_id=\"" + info.file + "\" type=\"bg\" subtype=\"0\" id=\"" + info.file + "\"/>");
 })
 .route("POST", "/goapi/saveSound/", async (req, res) => {
 	console.log(req.body);

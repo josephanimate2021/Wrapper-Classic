@@ -3,6 +3,7 @@ const path = require("path");
 const database = require("../../data/database"), DB = new database();
 const fUtil = require("../../utils/fileUtil");
 const folder = path.join(__dirname, "../../", process.env.ASSET_FOLDER);
+const folder2 = path.join(__dirname, "../../", process.env.SAVED_FOLDER);
 
 module.exports = {
 	/**
@@ -124,6 +125,8 @@ module.exports = {
 			DB.insert("assets", info)
 			// save the file
 			let writeStream = fs.createWriteStream(path.join(folder, info.id));
+			let writeStream2 = fs.createWriteStream(path.join(folder2, 'propAssetId.txt'));
+
 
 			if (Buffer.isBuffer(data)) {
 				writeStream.write(data, (e) => {
@@ -139,7 +142,12 @@ module.exports = {
 				data.resume();
 				data.pipe(writeStream);
 				// wait for the stream to end
-				data.on("end", () => res(info.id));
+				data.on("end", () => {
+					writeStream2.write(info.id, () => {
+						writeStream2.close();
+						res(info.id);
+					});
+				});
 			}
 		});
 	}
