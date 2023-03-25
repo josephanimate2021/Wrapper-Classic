@@ -9,7 +9,6 @@ const path = require("path");
 const tempfile = require("tempfile");
 const rFileUtil = require("../../utils/realFileUtil");
 const fUtil = require("../../utils/fileUtil");
-const fileTypes = require("../data/fileTypes.json");
 const nodezip = require("node-zip");
 const header = process.env.XML_HEADER;
 const thumbUrl = process.env.THUMB_BASE_URL;
@@ -238,12 +237,11 @@ list
 		themeId: "ugc"
 	});
 	for (const file of files) {
-		const buffer = Asset.load(file.id);
+		const buffer = Asset.load(file.id, true);
 		fUtil.addToZip(zip, `${file.type}/${file.id}`, buffer);
 	}
 	res.setHeader("Content-Type", "application/zip");
-	res.write(base);
-	res.end(await zip.zip());
+	res.end(Buffer.concat([base, await zip.zip()]));
 }).route("POST", "/goapi/getUserAssetsXml/", async (req, res) => {
 	let filters, themeId;
 	if (req.body.type == "char") {
@@ -303,19 +301,15 @@ load
 	}
 
 	try {
-		const ext = id.split(".")[-1] || "xml";
-		const mime = mimeTypes[extensions.indexOf(ext)];
-		const readStream = Asset.load(id);
-		res.setHeader("Content-Type", mime);
-		readStream.pipe(res);
+		res.end(Asset.load(id, true));
 	} catch (err) {
 		if (err.message === "404") {
 			res.statusCode = 404;
-			res.end();
+			res.end("1");
 		} else {
 			console.log("Error loading asset:", err);
 			res.statusCode = 500;
-			res.end();
+			res.end("1");
 		}
 	}
 })
@@ -360,12 +354,12 @@ studio redirect
 /*
 save
 */
-.route("POST", "/api/asset/upload", async (req, res) => {
-	const file = req.files.import;
-	if (typeof file === "undefined" && !req.body.type && !req.body.subtype) {
-		res.statusCode = 400;
-		res.json({ status: "malformed" });
-	}
+.route("POST", "/goapi/saveProp/", async (req, res) => {
+	const file = req.files.Filedata;
+	res.assert(file, req.body.type, req.body.title, 400, {
+		status: "error",
+		msg: "Missing one or more fields."
+	});
 
 	// get the filename and extension
 	const { filepath } = file;
@@ -373,131 +367,46 @@ save
 	const filename = path.parse(origName).name;
 	const { ext } = await fromFile(filepath);
 
-	// validate the file type
-	if ((fileTypes[req.body.type] || []).indexOf(ext) < 0) {
-		res.status(400);
-		res.json({
-			status: "error",
-			msg: "Invalid file type."
-		});
-		return;
-	}
-
 	let info = {
-		type: req.body.type,
-		subtype: req.body.subtype,
-		title: req.body.name || filename,
-	}, stream;
-
-	switch (info.type) {
-		case "bg" : {
-			if (ext == "swf") {
-				stream = fs.createReadStream(filepath);
-			} else {
-				stream = await rFileUtil.resizeImage(filepath, 550, 354);
-			}
-			stream.pause();
-
-			// save asset
-			info.file = await Asset.save(stream, ext, info);
-			break;
-		}
-		case "watermark": {
-			stream = fs.createReadStream(filepath);
-			stream.pause();
-
-			// save asset
-			info.file = await Asset.save(stream, ext, info);
-			break;
-		}
-		case "sound": {
-			await new Promise(async (resolve, reject) => {
-				if (ext != "mp3") {
-					stream = await rFileUtil.convertToMp3(filepath, ext);
-				} else {
-					stream = fs.createReadStream(filepath);
-				}
-				const temppath = tempfile(".mp3");
-				const writeStream = fs.createWriteStream(temppath);
-				stream.pipe(writeStream);
-				stream.on("end", async () => {
-					info.duration = await rFileUtil.mp3Duration(temppath);
-					info.file = await Asset.save(temppath, "mp3", info);
-					info.downloadtype = "progressive";
-					resolve();
-				});
-			});
-			break;
-		}
-		case "prop": {
-			let { ptype } = req.body;
-			// verify the prop type
-			switch (ptype) {
-				case "wearable":
-				case "headable":
-				case "holdable":
-					info.ptype = ptype;
-				default:
-					info.ptype = "placeable";
-			}
-
-			if (info.subtype == "video") {
-				delete info.ptype;
-				const temppath = tempfile(".flv");
-				await new Promise((resolve, rej) => {
-					// get the height and width
-					ffmpeg(filepath).ffprobe((e, data) => {
-						if (e) rej(e);
-						info.width = data.streams[0].width;
-						info.height = data.streams[0].height;
-
-						// convert the video to an flv
-						ffmpeg(filepath)
-							.output(temppath)
-							.on("end", async () => {
-								const readStream = fs.createReadStream(temppath);
-								info.file = await Asset.save(readStream, "flv", info);
-
-								// save the first frame
-								ffmpeg(filepath)
-									.seek("0:00")
-									.output(path.join(
-										__dirname,
-										"../../",
-										process.env.ASSET_FOLDER,
-										info.id.slice(0, -3) + "png"
-									))
-									.outputOptions("-frames", "1")
-									.on("end", () => resolve(info.id))
-									.run();
-							})
-							.on("error", (e) => rej("Error converting video:", e))
-							.run();
-					});
-				});
-			} else {
-				info.file = await Asset.save(filepath, ext, info);
-			}
-			break;
-		}
-		default: {
-			res.status(400);
-			res.json({
-				status: "error",
-				msg: "Invalid asset type."
-			});
-			return;
-		}
-	}
+		type: "prop",
+		subtype: "0",
+		title: filename,
+	};
+	info.ptype = "placeable";
+	info.file = await Asset.save(filepath, ext, info);
 
 	// stuff for the lvm
 	info.enc_asset_id = info.file;
-
-	res.json({
-		status: "ok", 
-		data: info
+	res.setHeader("Content-Type", "application/xml");
+	res.end("0<status=\"ok\" type=\"prop\" subtype=\"0\" title=\"" + info.title + "\" ptype=\"placeable\" id=\"" + info.enc_asset_id + "\" file=\"" + info.enc_asset_id + "\" enc_asset_id=\"" + info.enc_asset_id + "\" />");
+})
+.route("POST", "/goapi/saveBackground/", async (req, res) => {
+	const file = req.files.Filedata;
+	res.assert(file, req.body.title, 400, {
+		status: "error",
+		msg: "Missing one or more fields."
 	});
-}).route("POST", "/goapi/saveSound/", async (req, res) => {
+
+	// get the filename and extension
+	const { filepath } = file;
+	const origName = file.originalFilename;
+	const filename = path.parse(origName).name;
+	const { ext } = await fromFile(filepath);
+
+	let info = {
+		type: "bg",
+		subtype: "0",
+		title: filename,
+	};
+	info.ptype = "placeable";
+	info.file = await Asset.save(filepath, ext, info);
+
+	// stuff for the lvm
+	info.enc_asset_id = info.file;
+	res.setHeader("Content-Type", "application/xml");
+	res.end("0<status=\"ok\" type=\"bg\" subtype=\"0\" title=\"" + req.body.title + "\" id=\"" + info.enc_asset_id + "\" file=\"" + info.enc_asset_id + "\" enc_asset_id=\"" + info.enc_asset_id + "\" />");
+})
+.route("POST", "/goapi/saveSound/", async (req, res) => {
 	isRecord = req.body.bytes ? true : false;
 
 	let filepath, ext, stream;
