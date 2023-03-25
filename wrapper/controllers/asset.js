@@ -39,13 +39,7 @@ delete
 group.route("POST", "/goapi/deleteAsset/", (req, res) => {
 	const id = req.body.assetId;
 	res.assert(id, 400, { status: "error" });
-
-	if (!DB.delete("assets", id)) {
-		res.end('1');
-	} else {
-		res.statusCode = 404;
-		res.end("404 Not Found");
-	}
+	DB.delete("assets", id);
 })
 
 /*
@@ -407,6 +401,7 @@ save
 	res.end("0<status=\"ok\" type=\"bg\" subtype=\"0\" title=\"" + req.body.title + "\" id=\"" + info.enc_asset_id + "\" file=\"" + info.enc_asset_id + "\" enc_asset_id=\"" + info.enc_asset_id + "\" />");
 })
 .route("POST", "/goapi/saveSound/", async (req, res) => {
+	console.log(req.body);
 	isRecord = req.body.bytes ? true : false;
 
 	let filepath, ext, stream;
@@ -439,10 +434,9 @@ save
 	stream.on("end", async () => {
 		info.duration = await rFileUtil.mp3Duration(temppath);
 		const id = await Asset.save(temppath, "mp3", info);
-		res.end(
-			`0<response><asset><id>${id}</id><enc_asset_id>${id}</enc_asset_id><type>sound</type><subtype>${info.subtype}</subtype><title>${info.title}</title><published>0</published><tags></tags><duration>${info.duration}</duration><downloadtype>progressive</downloadtype><file>${id}</file></asset></response>`
-		);
+		if (!req.body.headable) res.end(`0<response><asset><id>${id}</id><enc_asset_id>${id}</enc_asset_id><type>sound</type><subtype>${info.subtype}</subtype><title>${info.title}</title><published>0</published><tags></tags><duration>${info.duration}</duration><downloadtype>progressive</downloadtype><file>${id}</file></asset></response>`);
+		else res.end("0<status=\"ok\" downloadtype=\"progressive\" enable=\"Y\" type=\"sound\" subtype=\"" + info.subtype + "\" name=\"" + info.title + "\" tag=\"\" themeId=\"ugc\" duration=\"" + info.duration + "\" id=\"" + id + "\" file=\"" + id + "\" enc_asset_id=\"" + id + "\" />");
 	});
-});
+})
 
 module.exports = group;
