@@ -364,15 +364,12 @@ save
 	let info = {
 		type: "prop",
 		subtype: "0",
-		title: filename,
+		title: req.body.title || filename,
+		ptype: "placeable"
 	};
-	info.ptype = "placeable";
 	info.file = await Asset.save(filepath, ext, info);
-
-	// stuff for the lvm
-	info.enc_asset_id = info.file;
 	res.setHeader("Content-Type", "application/xml");
-	res.end("0<status=\"ok\" type=\"prop\" subtype=\"0\" title=\"" + info.title + "\" ptype=\"placeable\" id=\"" + info.enc_asset_id + "\" file=\"" + info.enc_asset_id + "\" enc_asset_id=\"" + info.enc_asset_id + "\" />");
+	res.end("0<enc_asset_id=\"" + info.file + "\" type=\"prop\" subtype=\"0\" name=\"" + info.title + "\" id=\"" + info.file + "\" enable=\"Y\"/>");
 })
 .route("POST", "/goapi/saveBackground/", async (req, res) => {
 	const file = req.files.Filedata;
