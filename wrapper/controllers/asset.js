@@ -226,8 +226,7 @@ list
 	}).on("error", handleError).end();
 }).route("POST", "/goapi/updateProp/", (req, res) => {
 	var aId = req.body.assetId;
-	if (!aId || aId == "NaN") aId = fs.readFileSync(path.join(folder2, 'propAssetId.txt'), 'utf8').split(".")[0];
-	else aId = req.body.assetId.split(".")[0];
+	if (!aId || aId == "NaN") aId = fs.readFileSync(path.join(folder2, 'propAssetId.txt'), 'utf8');
 	const buffer = Buffer.from(req.body.imageData, "base64");
 	fs.writeFileSync(path.join(folder, aId), buffer);
 	res.end(aId);
