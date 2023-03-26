@@ -39,8 +39,8 @@ function listAssets(filters) {
 delete
 */
 group.route("POST", "/goapi/deleteAsset/", (req, res) => {
-	const id = req.body.assetId;
-	res.assert(id, 400, { status: "error" });
+	const id = req.body.assetId || req.body.id;
+	res.assert(id, 400, '1');
 	DB.delete("assets", id);
 })
 
@@ -227,9 +227,10 @@ list
 }).route("POST", "/goapi/updateProp/", (req, res) => {
 	var aId = req.body.assetId;
 	if (!aId || aId == "NaN") aId = fs.readFileSync(path.join(folder2, 'propAssetId.txt'), 'utf8');
+	console.log(aId);
 	const buffer = Buffer.from(req.body.imageData, "base64");
 	fs.writeFileSync(path.join(folder, aId), buffer);
-	res.end(aId);
+	res.end("0<aId=\"" + aId + "\" type=\"prop\" subtype=\"0\" id=\"" + aId + "\"/>");
 })
 .route("POST", "/goapi/getUserAssets/", async (req, res) => {
 	const zip = nodezip.create();

@@ -117,11 +117,7 @@ module.exports = {
 	 */
 	save(data, ext, info) {
 		return new Promise((res, rej) => {
-			if (ext.includes(".")) {
-				info.id = ext;
-			} else {
-				info.id = `${fUtil.generateId()}.${ext}`;
-			}
+			info.id = `${fUtil.generateId()}.${ext}`;
 			DB.insert("assets", info)
 			// save the file
 			let writeStream = fs.createWriteStream(path.join(folder, info.id));
