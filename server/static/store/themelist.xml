@@ -7,7 +7,7 @@
 	<theme id="sf" name="Street Fighter" enable="N" />
 	<theme id="willie" name="Willie Nelson" enable="N" />
 	<theme id="startrek" name="Star Trek Quogs" enable="N" />
-      <theme id="custom" name="Comedy World" cc_theme_id="family" />
+      <theme id="custom" name="Comedy World" enable="N" cc_theme_id="family" />
       <theme id="Comm" name="Community Library" enable="N" />
       <theme id="Community" name="Community Library (Stock)" enable="N"/>
 	<word></word>
